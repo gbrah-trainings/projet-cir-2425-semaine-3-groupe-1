@@ -1,3 +1,47 @@
+.body-text {
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 1.5rem 0;
+}
+
+.header-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+
+.header-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.header-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.header-link:hover {
+    text-decoration: underline;
+}
+
 .messagerie {
     padding: 2rem;
     background-color: #f4f4f4;
@@ -85,4 +129,16 @@ textarea {
 
 .send-btn:hover {
     background-color: #2575fc;
+}
+
+.footer {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.footer-text {
+    font-size: 1rem;
+    margin: 0;
 }
