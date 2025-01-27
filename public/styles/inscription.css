@@ -143,3 +143,36 @@
 .autocomplete-item:hover {
     background-color: #f0f0f0;
 }
+
+.subjects-container {
+    margin-top: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.subject-postit {
+    background-color: #2e71db;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subject-postit .remove-btn {
+    cursor: pointer;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 50%;
+    font-size: 1em;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
