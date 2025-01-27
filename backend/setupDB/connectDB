@@ -1,0 +1,23 @@
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
+const client = new MongoClient(uri);
+
+
+
+async function addNewUserInDB(name, desc, email, num, isAdmin){
+    const db = client.db("users");
+    const collection = db.collection("users");
+    const result = await collection.insertOne({name: name, description: desc, email: email, num: num, isAdmin: isAdmin});
+    console.log("Nouvel utilisateur ajouté dans la base de données :", result);
+}
+
+async function checkAllUsernamesInDB(){
+    const db = client.db("users");
+    const collection = db.collection("users");
+    const result = await collection.find({}).toArray();
+    console.log("Liste des utilisateurs dans la base de données :", result);
+}
+
+addNewUserInDB("Florian", "Caca", "caca@gmail.com", "0601020304", false);
+checkAllUsernamesInDB();
