@@ -30,3 +30,36 @@
     font-size: 1rem;
     margin: 0;
 }
+
+/* Responsive Styles */
+
+/* Pour les grands écrans (ordinateurs de bureau) */
+@media (min-width: 1200px) {
+    .header-container {
+        width: 90%;
+    }
+}
+
+/* Pour les tablettes (entre 768px et 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
+    .header-container {
+        width: 90%;
+    }
+}
+
+/* Pour les téléphones (moins de 768px) */
+@media (max-width: 767px) {
+    .header-container {
+        width: 90%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-title {
+        font-size: 1.5rem;
+    }
+
+    .footer {
+        font-size: 0.9rem;
+    }
+}
