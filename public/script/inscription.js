@@ -1,3 +1,7 @@
+fetch('/assets/header.html').then(response => response.text()).then(html => document.getElementsByTagName('header')[0].innerHTML = html);
+fetch('/assets/footer.html').then(response => response.text()).then(html => document.getElementsByTagName('footer')[0].innerHTML = html);
+
+
 const subjects = ["Mathématiques", "Sciences", "Informatique", "Français", "Anglais", "Physique", "Chimie", "Biologie", "Histoire", "Géographie"];
 const subjectInput = document.getElementById("teaching-subject");
 const autocompleteList = document.getElementById("autocomplete-list");

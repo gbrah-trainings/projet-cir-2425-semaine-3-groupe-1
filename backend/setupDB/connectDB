@@ -19,5 +19,5 @@ async function checkAllUsernamesInDB(){
     console.log("Liste des utilisateurs dans la base de données :", result);
 }
 
-addNewUserInDB("Florian", "Caca", "caca@gmail.com", "0601020304", false);
+addNewUserInDB("Alain", "Juif", "juifjuif@gmail.com", "0664888012", false);
 checkAllUsernamesInDB();
