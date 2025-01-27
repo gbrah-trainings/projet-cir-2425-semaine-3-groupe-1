@@ -1,0 +1,88 @@
+.messagerie {
+    padding: 2rem;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+.messagerie-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.messagerie-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.chat-box {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+}
+
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.received {
+    background-color: #e5e5e5;
+    text-align: left;
+}
+
+.sent {
+    background-color: #6a11cb;
+    color: white;
+    text-align: right;
+}
+
+.message-text {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.message-time {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+.message-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    resize: none;
+    font-size: 1rem;
+}
+
+.send-btn {
+    background-color: #6a11cb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-btn:hover {
+    background-color: #2575fc;
+}

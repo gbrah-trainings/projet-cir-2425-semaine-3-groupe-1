@@ -1,11 +1,172 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon projet Express</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme de Mentorat</title>
+    <link href="styles/index.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Bienvenue sur mon projet Express</h1>
+<body class="body-text">
+    <header class="header">
+        <div class="header-container">
+            <h1 class="header-title">Parcours d'Entre Aide</h1>
+            <nav>
+                <ul class="header-nav">
+                    <li><a href="#features" class="header-link">Fonctionnalités</a></li>
+                    <li><a href="#dashboard" class="header-link">Tableau de bord</a></li>
+                    <li><a href="#contact" class="header-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-container">
+            <h2 class="hero-title">Mettez en relation étudiants et mentors facilement</h2>
+            <p class="hero-description">Une plateforme intuitive pour accompagner et guider les étudiants selon leurs besoins et compétences.</p>
+            <a href="#features" class="hero-button">Découvrir les fonctionnalités</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="features-container">
+            <h2 class="features-title">Fonctionnalités principales</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-title">Gestion des rôles</h3>
+                    <p class="feature-description">Attribuez facilement les rôles d'étudiant ou de mentor pour organiser les interactions.</p>
+                </div>
+                <div class="feature-card">
+                    <h3 class="feature-title">Mise en relation</h3>
+                    <p class="feature-description">Associez étudiants et mentors selon leurs compétences et centres d’intérêt.</p>
+                </div>
+                <div class="feature-card">
+                    <h3 class="feature-title">Suivi du mentorat</h3>
+                    <p class="feature-description">Planifiez des objectifs, suivez les progrès, et organisez des rendez-vous facilement.</p>
+                </div>
+                <div class="feature-card">
+                    <a href="messagerie.html">
+                            <h3 class="feature-title">Messagerie intégrée</h3>
+                            <p class="feature-description">Discutez via une messagerie textuelle ou visuelle entre étudiants et mentors.</p>
+                    </a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">Statistiques et tableau de bord</h3>
+                    <p class="feature-description">Visualisez des données utiles : leaderboard, historique, et plus encore.</p>
+                </div>
+                <div class="feature-card">
+                    <h3 class="feature-title">Page d’historique</h3>
+                    <p class="feature-description">Consultez l’historique des sessions et évaluez les objectifs atteints.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" class="dashboard">
+        <div class="dashboard-container">
+            <h2 class="dashboard-title">Tableau de bord</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">Leaderboard</h3>
+                    <p class="dashboard-card-description">Classement des mentors et étudiants les plus actifs.</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">Progression</h3>
+                    <p class="dashboard-card-description">Suivez vos progrès et atteignez vos objectifs de mentorat.</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">Statistiques globales</h3>
+                    <p class="dashboard-card-description">Analysez les données globales pour améliorer l'expérience utilisateur.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="annonces">
+        <h2 class="annonces-title">Annonces en vedette</h2>
+        <div class="annonces-wrapper">
+            <button class="annonces-arrow left-arrow">❮</button>
+            <div class="annonces-container">
+                <div class="annonce-card">
+                    <img src="./Images/Prof1.jpg" alt="Image annonce 1" class="annonce-image">
+                    <h3 class="annonce-title">Didier</h3>
+                    <p class="annonce-description">Prof de Techno</p>
+                </div>
+                <div class="annonce-card">
+                    <img src="./Images/Prof2.png" alt="Image annonce 2" class="annonce-image">
+                    <h3 class="annonce-title">Bertrand</h3>
+                    <p class="annonce-description">Prof de Physique</p>
+                </div>
+                <div class="annonce-card">
+                    <img src="./Images/Prof1.jpg" alt="Image annonce 3" class="annonce-image">
+                    <h3 class="annonce-title">Patrick</h3>
+                    <p class="annonce-description">Prof de Maths</p>
+                </div>
+                <div class="annonce-card">
+                    <img src="./Images/Prof1.jpg" alt="Image annonce 4" class="annonce-image">
+                    <h3 class="annonce-title">Bélatrice</h3>
+                    <p class="annonce-description">Prof de Français</p>
+                </div>
+                <div class="annonce-card">
+                    <img src="./Images/Prof1.jpg" alt="Image annonce 5" class="annonce-image">
+                    <h3 class="annonce-title">Juliette</h3>
+                    <p class="annonce-description">Prof d'Anglais</p>
+                </div>
+            </div>
+            <button class="annonces-arrow right-arrow">❯</button>
+        </div>
+    </section>
+
+    <section class="signup">
+        <div class="signup-container">
+            <h2 class="signup-title">Inscrivez-vous</h2>
+            <form action="#" method="POST" class="signup-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Nom</label>
+                    <input type="text" id="username" name="username" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="form-label">Prénom</label>
+                    <input type="firstname" id="firstname" name="firstname" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="ville" class="form-label">Ville</label>
+                    <input type="ville" id="ville" name="ville" class="form-input" required>
+                </div>                
+                <div class="form-group">
+                    <label for="email" class="form-label">Adresse e-mail</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="numero" class="form-label">Numéro de téléphone</label>
+                    <input type="numero" id="numero" name="numero" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="form-input" required>
+                </div>
+                <button type="submit" class="signup-btn">S'inscrire</button>
+            </form>
+            <p class="signup-footer">Vous avez déjà un compte ? <a href="login.html">Connectez-vous ici</a></p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <h2 class="contact-title">Contactez-nous</h2>
+            <p class="contact-description">Une question ? Besoin d'aide ? Nous sommes là pour vous aider !</p>
+            <a href="mailto:support@mentorapp.com" class="contact-button">Envoyer un e-mail</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p class="footer-text">&copy; 2025 Plateforme de Mentorat. Tous droits réservés.</p>
+    </footer>
 </body>
+<script src="script/index.js"></script>
 </html>
