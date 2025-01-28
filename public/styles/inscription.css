@@ -6,37 +6,6 @@
     box-sizing: border-box;
 }
 
-.header {
-    background: linear-gradient(90deg, #6a11cb, #2575fc);
-    color: white;
-    padding: 1.5rem 0;
-}
-
-.header-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-}
-
-.footer {
-    background: linear-gradient(90deg, #6a11cb, #2575fc);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-}
-
-.footer-text {
-    font-size: 1rem;
-    margin: 0;
-}
 
 .signup-btn {
     background-color: #6a11cb;

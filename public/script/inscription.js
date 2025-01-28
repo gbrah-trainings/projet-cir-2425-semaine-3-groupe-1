@@ -1,3 +1,5 @@
+
+
 const subjects = ["Mathématiques", "Sciences", "Informatique", "Français", "Anglais", "Physique", "Chimie", "Biologie", "Histoire", "Géographie"];
 const subjectInput = document.getElementById("teaching-subject");
 const autocompleteList = document.getElementById("autocomplete-list");
