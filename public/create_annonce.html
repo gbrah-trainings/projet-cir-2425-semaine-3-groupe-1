@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor J'Adore !</title>
+    <link href="styles/global.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/create_annonce.css">
+</head>
+<header class="header"></header>
+<body class="body-text">
+    <div class="container">
+        <h1 class="title">Renseignez vos informations</h1>
+
+        <div class="section">
+            <h2>Êtes-vous mentor ou apprenant ?</h2>
+            <div class="role-options">
+                <div class="option">
+                    <input type="radio" id="mentor" name="role" value="mentor">
+                    <label for="mentor">Mentor</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="apprenant" name="role" value="apprenant">
+                    <label for="apprenant">Apprenant</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <h2>Sélectionnez une matière :</h2>
+            <div class="input-group autocomplete">
+                <input 
+                    type="text" 
+                    id="subject-input" 
+                    placeholder="Recherchez une matière..." 
+                    oninput="filterSubjects()"
+                />
+                <div class="autocomplete-list" id="subject-list"></div>
+            </div>
+            <button class="btn" onclick="addSubject()">Ajouter matière</button>
+            <div class="subject-list" id="subject-list-container"></div>
+        </div>
+
+
+        <div class="section">
+            <h2>Adresse du cours (ou laissez vide pour visio) :</h2>
+            <div class="input-group">
+                <textarea id="address" rows="2" placeholder="Adresse complète ou laissez vide"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Rayon où vous pouvez vous déplacer :</h2>
+            <div class="radius-line">
+                <input type="checkbox" id="radius-enable" name="radius-option">
+                <label for="radius-enable">
+                    Je peux me rendre dans un rayon de 
+                    <input type="number" id="radius-input" placeholder="0" min="0"> Km autour de chez moi
+                </label>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <h2>Date de début :</h2>
+            <div class="input-group">
+                <input type="date" id="start-date">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Ajoutez vos disponibilités :</h2>
+            <div class="availability-form">
+                <select id="availability-day">
+                    <option value="" disabled selected>Choisissez un jour</option>
+                    <option value="lundi">Lundi</option>
+                    <option value="mardi">Mardi</option>
+                    <option value="mercredi">Mercredi</option>
+                    <option value="jeudi">Jeudi</option>
+                    <option value="vendredi">Vendredi</option>
+                    <option value="samedi">Samedi</option>
+                    <option value="dimanche">Dimanche</option>
+                </select>
+                <input type="time" id="availability-start" placeholder="Heure de début">
+                <input type="time" id="availability-end" placeholder="Heure de fin">
+                <select id="availability-type">
+                    <option value="" disabled selected>Mode</option>
+                    <option value="distanciel">Distanciel</option>
+                    <option value="présentiel (lieu à préciser)">Présentiel (lieu à préciser)</option>
+                    <option value="chez vous">Chez vous</option>
+                </select>
+                <button class="btn" onclick="addAvailability()">Ajouter</button>
+            </div>
+            <div class="availability-list" id="availability-list-container"></div>
+        </div>
+
+
+        <button class="btn">Soumettre</button>
+    </div>
+
+    
+    <footer class="footer"></footer>
+
+    <script src="script/global.js"></script>
+    <script src="script/create_annonce.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor J'Adore !</title>
+    <link href="styles/global.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/create_apprenant.css">
+</head>
+<header class="header"></header>
+<body class="body-text">
+    <div class="container">
+        <h1 class="title">Renseignez vos informations</h1>
+
+        <div class="section">
+            <h2>Êtes-vous mentor ou apprenant ?</h2>
+            <div class="role-options">
+                <div class="option">
+                    <input type="radio" id="mentor" name="role" value="mentor">
+                    <label for="mentor">Mentor</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="apprenant" name="role" value="apprenant">
+                    <label for="apprenant">Apprenant</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <h2>Sélectionnez une matière :</h2>
+            <div class="input-group autocomplete">
+                <input 
+                    type="text" 
+                    id="subject-input" 
+                    placeholder="Recherchez une matière..." 
+                    oninput="filterSubjects()"
+                />
+                <div class="autocomplete-list" id="subject-list"></div>
+            </div>
+            <button class="btn" onclick="addSubject()">Ajouter matière</button>
+            <div class="subject-list" id="subject-list-container"></div>
+        </div>
+
+
+        <div class="section">
+            <h2>Adresse du cours (ou laissez vide pour visio) :</h2>
+            <div class="input-group">
+                <textarea id="address" rows="2" placeholder="Adresse complète ou laissez vide"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Rayon où vous pouvez vous déplacer :</h2>
+            <div class="radius-line">
+                <input type="checkbox" id="radius-enable" name="radius-option">
+                <label for="radius-enable">
+                    Je peux me rendre dans un rayon de 
+                    <input type="number" id="radius-input" placeholder="0" min="0"> Km autour de chez moi
+                </label>
+            </div>
+        </div>
+
+        <button class="btn">Soumettre</button>
+    </div>
+
+    
+    <footer class="footer"></footer>
+
+    <script src="script/global.js"></script>
+    <script src="script/create_apprenant.js"></script>
+</body>
+</html>
