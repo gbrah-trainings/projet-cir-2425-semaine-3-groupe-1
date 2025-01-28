@@ -1,0 +1,81 @@
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 3rem 1rem;
+    display: grid;
+    grid-template-areas: 
+        "d d mentor"
+        "texte texte texte"
+        "dis dis dis";
+    grid-template-rows: auto 10px auto;
+    grid-template-columns: 1fr 1fr 200px;
+    gap: 15px;
+    align-items: start
+}
+.details {
+    grid-area: d;
+}
+.texte{
+    grid-area: texte;
+}
+.disponibilites {
+    grid-area: dis;
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+.dispo-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #ddd;
+    cursor: pointer;
+}
+.contact-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+.mentor-card {
+    width: 120px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+.mentor-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 150px;
+    max-height: 150px;
+}
+.mentor-info {
+    background: #625a78;
+    color: white;
+    padding: 8px;
+}
+.mentor-info p {
+    margin: 0;
+    font-size: 12px;
+}
+.mentor-info strong {
+    display: block;
+    font-size: 14px;
+}

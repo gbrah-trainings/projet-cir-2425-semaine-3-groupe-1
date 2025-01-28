@@ -1,5 +1,3 @@
-
-
 const subjects = ["Mathématiques", "Sciences", "Informatique", "Français", "Anglais", "Physique", "Chimie", "Biologie", "Histoire", "Géographie"];
 const subjectInput = document.getElementById("teaching-subject");
 const autocompleteList = document.getElementById("autocomplete-list");
@@ -57,3 +55,39 @@ function addSubject(subject) {
     postit.appendChild(removeBtn);
     subjectsContainer.appendChild(postit);
 }
+
+
+/* --------- Form submit ------------------------------------------------------------------- */
+
+const form = document.getElementById('inscriptionForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Empêche le rechargement de la page
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const response = await fetch('/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+
+        if (response) {
+          const message = await response.json();
+          
+          if(message.error){
+            resultDiv.textContent = message.error;
+          } else {
+            resultDiv.textContent = 'Données soumises avec succès !';      
+          }
+        }
+      } catch (error) {
+        resultDiv.textContent = 'Une erreur est survenue. Veuillez réessayer dans quelques instants.';
+      }
+    });
