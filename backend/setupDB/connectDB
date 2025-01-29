@@ -61,6 +61,7 @@ async function checkAllUsernamesInDB(){
 }
 
 // Exemple 1 : Utilisateur admin
+/*
 addNewUserInDB(
     "Alice",
     "Dupont",
@@ -124,6 +125,6 @@ addNewUserInDB(
     "Bac+2",
     ["Design graphique", "Photoshop", "Illustrator"]
 );
-
+*/
 
   checkAllUsernamesInDB();
