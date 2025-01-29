@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
 const client = new MongoClient(uri);
 import bcrypt from 'bcrypt';
-export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB };
+export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB};
 
 
 
@@ -92,7 +92,7 @@ async function deleteUserInDB(UserID){
 
 //Cette fonction n'est pas destinée à rester, elle sert simplement à utiliser des fonctions await au top level pour les tests
 //Elle ajoute des utilisateurs exemples dans la DB
-await addNewUserInDB(
+/*await addNewUserInDB(
   "Alice",
   "Dupont",
   "alice.dupont@email.com",
@@ -129,10 +129,31 @@ await addNewUserInDB(
   "Doctorat",
   ["Machine Learning", "TensorFlow", "Big Data"],
   "Marseille"
-);
+);*/
 
-
-
+//Fonction de connexion
+//identifiant peut être un email ou un numéro de téléphone
+//password est un string
+//Retourne l'UserID si la connexion est réussie, 0 si le mot de passe est incorrect, -1 si l'utilisateur n'est pas trouvé
+async function login(identifiant, password){
+  const db = client.db("users");
+  const collection = db.collection("users");
+  const user = await collection.findOne({$or: [{email:identifiant}, {tel:identifiant}]});
+  if(!user){
+    console.log("Utilisateur non trouvé");
+    return -1;
+  }
+  if(user){
+    if(bcrypt.compareSync(password, user.password)){
+      console.log("Connexion réussie");
+      return user.UserID;
+    }
+    else{
+      console.log("Mot de passe incorrect");
+      return 0;
+    }
+}
+}
 //FONCTION DE TEST QUI SUPPRIME LA TOTALITE DE LA DB, DEMANDER AVANT D'UTILISER
 async function clearDB(){
   const db = client.db("users");
@@ -142,6 +163,10 @@ async function clearDB(){
   await closeDB();
 }
 
-await closeDB();
-//clearDB();
+await login("alice.dupont@email.com","SecurePass123");
+await login("0601020304","SecurePass123");
+await login("ezf@gmail.com", "abc123");
+await login('alice.dupont@email.com',"test");
 
+await   closeDB();
+//clearDB();
