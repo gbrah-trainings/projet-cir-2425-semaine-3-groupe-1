@@ -102,4 +102,23 @@ app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
+//------------------------------------<<<Create_Annonces>>>--------------------------------
+
+
+app.post('/submitAnnonce', (req, res) => {
+  const { role, subjects, address, radius, startDate, availabilities } = req.body;
+
+  if (!role || subjects.length === 0 || !startDate || availabilities.length === 0) {
+      return res.status(400).json({ error: 'Tous les champs obligatoires doivent être remplis.' });
+  }
+
+  try {
+      saveAnnonceInDB(role, subjects, address, radius, startDate, availabilities);
+
+      res.status(201).json({ message: "Annonce enregistrée avec succès !" });
+  } catch (error) {
+      console.error("Erreur lors de l'enregistrement de l'annonce :", error);
+      res.status(500).json({ error: "Une erreur est survenue, veuillez réessayer plus tard." });
+  }
+});
 
