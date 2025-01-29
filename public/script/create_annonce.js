@@ -148,9 +148,11 @@ document.getElementById('radius-enable').addEventListener('change', function () 
 // Initialisation : désactive le champ par défaut
 document.getElementById('radius-input').disabled = true;
 
+
 //-----------Serveur POST-------------
 
-document.querySelector('.btn').addEventListener('click', function () {
+document.getElementById('btn_submit').addEventListener('click', function () {
+
     // Récupérer le rôle (mentor ou apprenant)
     const role = document.querySelector('input[name="role"]:checked')?.value;
 

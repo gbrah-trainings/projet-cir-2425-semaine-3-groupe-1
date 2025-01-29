@@ -8,7 +8,7 @@ export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, c
 
 //fonction de fermeture de la connexion à la DB
 async function closeDB(){
-  await client.close();
+  await client.close();     //à décomenter quand la connexion sera réparée
 }
 
 //Add a new user in the DB, with explicit parameters
@@ -163,10 +163,71 @@ async function clearDB(){
   await closeDB();
 }
 
-await login("alice.dupont@email.com","SecurePass123");
-await login("0601020304","SecurePass123");
-await login("ezf@gmail.com", "abc123");
-await login('alice.dupont@email.com',"test");
 
-await   closeDB();
-//clearDB();
+async function getterUser(parametre, id) {
+    try {
+        // Connexion à la base de données
+        const db = client.db("users");
+        const collection = db.collection("users");
+
+        // Recherche de l'utilisateur avec l'ID spécifié
+        const result = await collection.findOne({ UserID: id });
+
+        // Vérification si l'utilisateur existe
+        if (result) {
+            // Vérifie si le paramètre demandé existe dans les données de l'utilisateur
+            if (result.hasOwnProperty(parametre)) {
+                console.log("Valeur du paramètre " + parametre + " : " + result[parametre]);
+                return result[parametre];
+            } else {
+                console.log("Le paramètre" + parametre + " n'existe pas pour cet utilisateur.");
+                return null;
+            }
+        } else {
+            console.log("Aucun utilisateur trouvé avec cet ID :", id);
+            return null;
+        }
+    } catch (err) {
+        console.error("Erreur lors de la récupération de l'utilisateur :", err);
+        throw err; // Remonte l'erreur si nécessaire
+    }
+}
+
+
+async function setterUser(parametre, valeur, id) {
+    try {
+        // Connexion à la base de données
+        const db = client.db("users");
+        const collection = db.collection("users");
+
+        // Vérification que l'utilisateur existe
+        const user = await collection.findOne({ UserID: id });
+        if (!user) {
+            console.log("Aucun utilisateur trouvé avec l'ID : " +id);
+            return null;
+        }
+
+        // Mise à jour du champ spécifié
+        const result = await collection.updateOne(
+            { UserID: id }, // Recherche par ID
+            { $set: { [parametre]: valeur } } // Mise à jour dynamique du paramètre
+        );
+
+        // Vérification du résultat de la mise à jour
+        if (result.matchedCount > 0) {
+            if (result.modifiedCount > 0) {
+                console.log("Mise à jour réussie : " + parametre + " = " + valeur + " pour l'utilisateur "+ id);
+            } else {
+                console.log('Aucun changement effectué');
+            }
+        } else {
+            console.log('Utilisateur pas trouvé.');
+        }
+    } catch (err) {
+        console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
+        throw err;
+    }
+}
+
+
+// await closeDB();

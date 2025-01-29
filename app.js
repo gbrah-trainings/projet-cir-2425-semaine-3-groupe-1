@@ -3,9 +3,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
+import session from 'express-session';
 
-
-import { addNewUserInDB } from './backend/setupDB/connectDB.mjs';
+import { addNewUserInDB, login } from './backend/setupDB/connectDB.mjs';
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +23,16 @@ app.get('/', (req, res) => {
 
 app.use(bodyParser.json());
 
+
+// ----------- SESSION CONFIG -----------------------------------------------------------
+app.use(session({
+  secret: 'monSuperSecret', // À remplacer, évidemment
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 } // 1 jour
+}));
+
+
 // ----------- FORM D'INSCRIPTION -------------------------------------------------------
 app.post('/inscriptionSubmit', (req, res) => {
 
@@ -33,7 +43,7 @@ app.post('/inscriptionSubmit', (req, res) => {
   const email = req.body["email"];
   const numero = req.body["numero"];
   const gender = req.body["gender"];
-  const education_level = req.body["education_level"];
+  const education_level = req.body["education-level"];
   const hidden_teaching_subject = req.body["hidden-teaching-subject"];
 
   const password = req.body["password"];
@@ -77,8 +87,7 @@ app.post('/inscriptionSubmit', (req, res) => {
   }
 
   try {
-    // Toutes les entrées sont alors sécurisées
-    
+    // Toutes les entrées sont sécurisées. En gros.
     addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville);
 
     res.status(201).json({ message: "Inscription réussie !" });
@@ -89,13 +98,62 @@ app.post('/inscriptionSubmit', (req, res) => {
 
 });
 
-app.post('/loginSubmit', (req, res) => {
-  console.log(req.body);
 
-  // TODO : login, return 500 ou 200 selon la réussite
 
-  res.status(200).json({ message: "Connexion réussie." });
+// ----------- FORM DE CONNEXION --------------------------------------------------------
+app.post('/loginSubmit', async (req, res) => {
+  const email_phone = req.body["email_phone"];
+  const password = req.body["password"];
+
+  if (!email_phone || !password) {
+    return res.status(400).json({ error: 'Email et mot de passe requis.' });
+  }
+
+  try {
+    
+    const ret = await login(email_phone, password);
+    if(ret == -1){
+      res.status(500).json({ error: "Cet utilisateur n'existe pas dans la base de données." });
+    }else if (ret == 0){
+      res.status(500).json({ error: "Mot de passe incorrect." });
+    }else{
+        // Supposons que `ret` contient l'ID utilisateur
+        const user_id = ret; 
+
+        // Stocker les infos de l'utilisateur dans la session
+        req.session.user = {
+          id: user_id,
+          username: "USERNAME_TODO"
+        };
+
+        // Génération d'un token simple (id + timestamp)
+        const authToken = `${user_id}-${Date.now()}`;
+
+        // Stocker le token dans un cookie HTTP sécurisé
+        res.cookie('auth_token', authToken, {
+          httpOnly: true, // Sécurisé, inaccessible en JS côté client
+          secure: false,  // Mettre `true` en production avec HTTPS
+          maxAge: 24 * 60 * 60 * 1000 // Expiration dans 24h
+        });
+
+        // Réponse JSON avec les infos nécessaires
+        return res.status(200).json({
+          message: "Connexion réussie.",
+          user: {
+            id: user_id,
+            username: ("USERNAME_TODO_ID_"+user_id)
+          },
+          token: authToken
+        });
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de la connexion :', error);
+      res.status(500).json({ error: 'Une erreur est survenue, veuillez réessayer plus tard.' });
+    }
+
 });
+
 
 
 app.listen(port, () => {
