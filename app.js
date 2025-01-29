@@ -1,7 +1,16 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
+
+
+import { addNewUserInDB } from './backend/setupDB/connectDB.mjs';
+
+// Configurer `__dirname` pour ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const app = express();
 const port = 3000;
@@ -12,11 +21,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-
 app.use(bodyParser.json());
 
 // ----------- FORM D'INSCRIPTION -------------------------------------------------------
-app.post('/submit', (req, res) => {
+app.post('/inscriptionSubmit', (req, res) => {
 
   // Trop bien
   const username = req.body["username"]
@@ -26,15 +34,22 @@ app.post('/submit', (req, res) => {
   const numero = req.body["numero"];
   const gender = req.body["gender"];
   const education_level = req.body["education_level"];
-  const teaching_subject = req.body["teaching_subject"];
+  const hidden_teaching_subject = req.body["hidden-teaching-subject"];
+
   const password = req.body["password"];
   const confirm_password = req.body["confirm_password"];
 
-  if(password != confirm_password)  res.status(400).json({ error: 'Les mots de passe ne correspondent pas.' });
-  
+  let teaching_subject;
+  if (hidden_teaching_subject) {
+      teaching_subject = JSON.parse(hidden_teaching_subject);
+  } else {
+      teaching_subject = [];
+  }
+
+
   // Validation des champs requis
-  if (!username || !firstname || !ville || !email || !numero || !password || !confirm_password) {
-    return res.status(400).json({ error: 'Tous les champs doivent être remplis.' });
+  if (!username || !firstname || !ville || !email || !numero || !password || !confirm_password || !education_level) {
+    return res.status(400).json({ error: 'Tous les champs obligatoires (marqués par *) doivent être remplis.' });
   }
 
   // Validation de l'email
@@ -50,7 +65,6 @@ app.post('/submit', (req, res) => {
   }
 
   // Validation du mot de passe
-  
   if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
     return res.status(400).json({
       error: 'Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une lettre minuscule et un chiffre.',
@@ -63,12 +77,9 @@ app.post('/submit', (req, res) => {
   }
 
   try {
-    // Hachage du mot de passe
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Simulez l'insertion dans une base de données
-    // Exemple :
-    // await database.insertUser({ username, firstname, ville, email, numero, gender, education_level, teaching_subject, hashedPassword });
+    // Toutes les entrées sont alors sécurisées
+    
+    addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville);
 
     res.status(201).json({ message: "Inscription réussie !" });
   } catch (error) {
@@ -78,10 +89,17 @@ app.post('/submit', (req, res) => {
 
 });
 
+app.post('/loginSubmit', (req, res) => {
+  console.log(req.body);
+
+  // TODO : login, return 500 ou 200 selon la réussite
+
+  res.status(200).json({ message: "Connexion réussie." });
+});
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
-
 
 

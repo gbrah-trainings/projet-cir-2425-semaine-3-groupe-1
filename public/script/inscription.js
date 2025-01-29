@@ -49,11 +49,22 @@ function addSubject(subject) {
     removeBtn.classList.add("remove-btn");
     removeBtn.addEventListener("click", () => {
         postit.remove(); 
+        updateHiddenInput();
     });
 
     postit.appendChild(subjectName);
     postit.appendChild(removeBtn);
     subjectsContainer.appendChild(postit);
+    updateHiddenInput();
+}
+
+// Fonction pour mettre à jour le champ caché avant la soumission
+function updateHiddenInput() {
+  const selectedSubjects = Array.from(subjectsContainer.children).map(postit => 
+      postit.querySelector("span").textContent
+  );
+
+  document.getElementById("hidden-teaching-subject").value = JSON.stringify(selectedSubjects);
 }
 
 
@@ -65,11 +76,13 @@ const form = document.getElementById('inscriptionForm');
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); // Empêche le rechargement de la page
 
+      updateHiddenInput();
+
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
 
       try {
-        const response = await fetch('/submit', {
+        const response = await fetch('/inscriptionSubmit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
