@@ -8,7 +8,7 @@ export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, c
 
 //fonction de fermeture de la connexion à la DB
 async function closeDB(){
-  //await client.close();     //à décomenter quand la connexion sera réparée
+  await client.close();     //à décomenter quand la connexion sera réparée
 }
 
 //Add a new user in the DB, with explicit parameters
@@ -230,4 +230,4 @@ async function setterUser(parametre, valeur, id) {
 }
 
 
-await closeDB();
+// await closeDB();
