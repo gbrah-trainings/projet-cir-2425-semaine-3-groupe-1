@@ -1,0 +1,22 @@
+const cli = require("./connectDB");
+
+async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, complement, areaSize, city, startDate, timetable, onlineMeeting, irlMeeting, canMove){
+    const db = cli.db("posts");
+    const collection = db.collection("poststest");
+    let idPost = 0;
+    const lastPost = await collection.find({}).sort({PostID:-1}).limit(1).toArray();
+    if(lastPost.length>0){
+        idPost=lastPost[0].PostID+1;
+    }
+    const result = await collection.insertOne({PostID: idPost, UserId: idUser, IsTeacher: isTeacher, Subject: subject, MeetingPoint: meetingPoint, Complement: complement, AreaSize: areaSize, City: city, StartDate: startDate, Timetable: timetable, OnlineMeeting: onlineMeeting, IRLMeeting: irlMeeting, CanMove: canMove});
+    console.log("Nouveau post banger de Plorian Poppa: ", result);
+}
+
+async function checkAllPostsInDB(){
+    const db = cli.db("posts");
+    const collection = db.collection("poststest");
+    const result = await collection.find({}).toArray();
+    console.log("Liste des posts dans la ddb: ", result);
+}
+
+addNewPostInDB(3, true, "Warframe", "Chez moi en vrai ^^", "Je suis féministe btw", 5, "Lille", new Date(), new Date(), true, true, true);
