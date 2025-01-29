@@ -88,7 +88,7 @@ app.post('/inscriptionSubmit', (req, res) => {
 
   try {
     // Toutes les entrées sont sécurisées. En gros.
-    addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville);
+    addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville, 0);
 
     res.status(201).json({ message: "Inscription réussie !" });
   } catch (error) {
