@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
 const client = new MongoClient(uri);
 import bcrypt from 'bcrypt';
-export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB};
+export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser };
 
 
 
@@ -12,18 +12,23 @@ async function closeDB(){
 }
 
 //Add a new user in the DB, with explicit parameters
+
 //password is hashed before being send to the DB
 //isAdmin is a boolean
 //Genre is a string, "M" or "F" or "X" for other
 //Be aware to use this function with await 
-async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Tel, NiveauEtudes, Competences, City){
+async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Tel, NiveauEtudes, Competences, City, Radius){
   //si l'un des paramètres est nul on retourne une erreur
-  if(!Name || !Surname || !Email || !Password || !Genre || !Tel || !NiveauEtudes || !Competences || !City){
-    console.log("Un des paramètres est nul");
+  console.log("coucou")
+  if(!Name || !Surname || !Email || !Password || !Genre || !NiveauEtudes || !City){
+    console.log("Un des paramètres obligatoire est nul");
     return -1;
   }
     const db = client.db("users");
+    console.log("ez")
     const collection = db.collection("users");
+    
+      console.log("ez2")
     let creationDate= new Date();
     let idUser=0;
     //on récupère le dernier idUser
@@ -37,7 +42,7 @@ async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Te
     { email: Email },
     { tel: Tel }
   ]
-});
+  });
     if(commonUsers){
         console.log("Un utilisateur avec cet email ou ce numéro de téléphone existe déjà dans la base de données");
         return -1;
@@ -61,6 +66,7 @@ async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Te
                     niveauEtudes:NiveauEtudes, 
                     competences:Competences, 
                     city:City,
+                    radiusMove:Radius,
                     nbCourses:0, 
                     nbMentorats:0,
                     postedSearchs:emptyArray, 
@@ -70,8 +76,8 @@ async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Te
 
     //fermeture de la connexion à la DB
     await closeDB();
-}
 
+}
 
 
 async function checkAllUsernamesInDB(){
@@ -90,46 +96,6 @@ async function deleteUserInDB(UserID){
   }
 
 
-//Cette fonction n'est pas destinée à rester, elle sert simplement à utiliser des fonctions await au top level pour les tests
-//Elle ajoute des utilisateurs exemples dans la DB
-/*await addNewUserInDB(
-  "Alice",
-  "Dupont",
-  "alice.dupont@email.com",
-  "SecurePass123",
-  false,
-  "F",
-  "0601020304",
-  "Master",
-  ["JavaScript", "React", "Node.js"],
-  "Paris"
-);
-
-await addNewUserInDB(
-  "Martin",
-  "Lefevre",
-  "martin.lefevre@email.com",
-  "StrongPwd456",
-  false,
-  "M",
-  "0612345678",
-  "Licence",
-  ["Python", "Django", "SQL"],
-  "Lyon"
-);
-
-await addNewUserInDB(
-  "Sophie",
-  "Lambert",
-  "sophie.lambert@email.com",
-  "MySuperPass789",
-  true,
-  "F",
-  "0698765432",
-  "Doctorat",
-  ["Machine Learning", "TensorFlow", "Big Data"],
-  "Marseille"
-);*/
 
 //Fonction de connexion
 //identifiant peut être un email ou un numéro de téléphone
@@ -192,7 +158,7 @@ async function getterUser(parametre, id) {
         throw err; // Remonte l'erreur si nécessaire
     }
 }
-
+console.log("bonjour ?")
 
 async function setterUser(parametre, valeur, id) {
     try {
@@ -229,5 +195,88 @@ async function setterUser(parametre, valeur, id) {
     }
 }
 
+/* =================================== TEST SUR LA DB ======================= */
+console.log("hello")
+await addNewUserInDB(
+  "Alice",
+  "Dupont",
+  "alice.dupont@email.com",
+  "SecurePass123",
+  false,
+  "F",
+  "0601020304",
+  "Master",
+  ["JavaScript", "React", "Node.js"],
+  "Paris",
+  10
+);
 
-// await closeDB();
+await addNewUserInDB(
+  "Martin",
+  "Lefevre",
+  "martin.lefevre@email.com",
+  "StrongPwd456",
+  false,
+  "M",
+  "0612345678",
+  "Licence",
+  ["Python", "Django", "SQL"],
+  "Lyon",
+  20
+);
+
+await addNewUserInDB(
+  "Sophie",
+  "Lambert",
+  "sophie.lambert@email.com",
+  "MySuperPass789",
+  true,
+  "F",
+  "0698765432",
+  "Doctorat",
+  ["Machine Learning", "TensorFlow", "Big Data"],
+  "Marseille",
+  15
+);
+
+await addNewUserInDB(
+  "Alex",
+  "Moreau",
+  "alex.moreau@email.com",
+  "Passw0rd!",
+  false,
+  "X",
+  "0688776655",
+  "BTS",
+  ["C++", "Embedded Systems"],
+  "Toulouse",
+  30
+);
+
+await addNewUserInDB(
+  "Emma",
+  "Rousseau",
+  "emma.rousseau@email.com",
+  "TrickyPass99",
+  false,
+  "F",
+  "0677889900",
+  "BAC+5",
+  ["UX/UI Design", "Figma", "Adobe XD"],
+  "Bordeaux",
+  25
+);
+
+await addNewUserInDB(
+  "Nathan",
+  "Dubois",
+  "nathan.dubois@email.com",
+  "SuperSecure123",
+  false,
+  "M",
+  "0655443322",
+  "Master",
+  ["Cybersecurity", "Ethical Hacking"],
+  "Lille",
+  50
+);
