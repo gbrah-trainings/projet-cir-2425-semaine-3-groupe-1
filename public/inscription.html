@@ -16,29 +16,31 @@
     <section class="signup">
         <div class="signup-container">
             <h2 class="signup-title">Inscrivez-vous</h2>
-            <form action="#" method="POST" class="signup-form">
+
+            <form id="inscriptionForm" method="POST" class="signup-form">
+
                 <div class="form-group">
-                    <label for="username" class="form-label">Nom</label>
+                    <label for="username" class="form-label">Nom*</label>
                     <input type="text" id="username" name="username" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="firstname" class="form-label">Prénom</label>
+                    <label for="firstname" class="form-label">Prénom*</label>
                     <input type="text" id="firstname" name="firstname" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="ville" class="form-label">Ville</label>
+                    <label for="ville" class="form-label">Ville*</label>
                     <input type="text" id="ville" name="ville" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="form-label">Adresse e-mail</label>
+                    <label for="email" class="form-label">Adresse e-mail*</label>
                     <input type="email" id="email" name="email" class="form-input" required>
                 </div>
                 <div class="form-group">
                     <label for="numero" class="form-label">Numéro de téléphone</label>
-                    <input type="text" id="numero" name="numero" class="form-input" required>
+                    <input type="text" id="numero" name="numero" class="form-input">
                 </div>
                 <div class="form-group">
-                    <label for="gender" class="form-label">Genre</label>
+                    <label for="gender" class="form-label">Genre*</label>
                     <div class="form-options">
                         <label><input type="radio" name="gender" value="male" required> Homme</label>
                         <label><input type="radio" name="gender" value="female" required> Femme</label>
@@ -46,7 +48,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="education-level" class="form-label">Niveau d'étude</label>
+                    <label for="education-level" class="form-label">Niveau d'étude*</label>
                     <select id="education-level" name="education-level" class="form-input" required>
                         <option value="" disabled selected>Choisissez votre niveau</option>
                         <option value="lycee">Lycée</option>
@@ -57,14 +59,26 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="teaching-subject" class="form-label">Matière à enseigner</label>
+                    <label for="teaching-subject" class="form-label">Matière à enseigner (optionnel)</label>
                     <div class="autocomplete-container">
-                        <input type="text" id="teaching-subject" name="teaching-subject" class="form-input" placeholder="Saisissez une matière" required>
+                        <input type="text" id="teaching-subject" name="teaching-subject" class="form-input" placeholder="Saisissez une matière">
                         <div id="autocomplete-list" class="autocomplete-list"></div>
                     </div>
                 </div>
                 <div id="subjects-container" class="subjects-container"></div>
+
+                <div class="form-group">
+                    <label for="numero" class="form-label">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+
+                    <label for="numero" class="form-label"><br>Confirmer le mot de passe</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" required>
+                </div>
+
+                <label id="result" class="signup-footer"></label>
+
                 <button type="submit" class="signup-btn">S'inscrire</button>
+
             </form>
             <p class="signup-footer">Vous avez déjà un compte ? <a href="login.html">Connectez-vous ici</a></p>
         </div>

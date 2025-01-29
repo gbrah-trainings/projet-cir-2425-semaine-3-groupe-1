@@ -36,6 +36,12 @@
     gap: 1.5rem;
 }
 
+.signup-footer {
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -117,6 +123,77 @@
     }
 
     .form-input, .login-btn {
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive Styles */
+
+/* Pour les grands écrans (ordinateurs de bureau) */
+@media (min-width: 1200px) {
+    .header-container {
+        width: 90%;
+    }
+
+    .signup-container {
+        max-width: 500px;
+    }
+
+    .signup-title {
+        font-size: 2rem;
+    }
+}
+
+/* Pour les tablettes (entre 768px et 1199px) */
+@media (max-width: 1199px) and (min-width: 768px) {
+    .header-container {
+        width: 90%;
+    }
+
+    .signup-container {
+        max-width: 400px;
+    }
+
+    .signup-title {
+        font-size: 1.8rem;
+    }
+
+    .form-input, .login-btn {
+        font-size: 0.9rem;
+    }
+}
+
+/* Pour les téléphones (moins de 768px) */
+@media (max-width: 767px) {
+    .header-container {
+        width: 90%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-title {
+        font-size: 1.5rem;
+    }
+
+    .signup {
+        padding: 3rem 1rem;
+    }
+
+    .signup-container {
+        width: 100%;
+        padding: 1.5rem;
+        max-width: 100%;
+    }
+
+    .signup-title {
+        font-size: 1.6rem;
+    }
+
+    .form-input, .login-btn {
+        font-size: 0.9rem;
+    }
+
+    .footer {
         font-size: 0.9rem;
     }
 }
