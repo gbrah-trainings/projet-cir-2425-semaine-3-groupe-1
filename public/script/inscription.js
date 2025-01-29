@@ -28,36 +28,6 @@ document.addEventListener("click", function (e) {
     }
 });
 
-function addSubject(subject) {
-    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
-        postit.querySelector("span").textContent
-    );
-    
-    if (existingSubjects.includes(subject)) {
-        alert(`La matière "${subject}" est déjà ajoutée !`);
-        return;
-    }
-
-    const postit = document.createElement("div");
-    postit.classList.add("subject-postit");
-
-    const subjectName = document.createElement("span");
-    subjectName.textContent = subject;
-
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "×";
-    removeBtn.classList.add("remove-btn");
-    removeBtn.addEventListener("click", () => {
-        postit.remove(); 
-        updateHiddenInput();
-    });
-
-    postit.appendChild(subjectName);
-    postit.appendChild(removeBtn);
-    subjectsContainer.appendChild(postit);
-    updateHiddenInput();
-}
-
 // Fonction pour mettre à jour le champ caché avant la soumission
 function updateHiddenInput() {
   const selectedSubjects = Array.from(subjectsContainer.children).map(postit => 
@@ -107,3 +77,49 @@ const form = document.getElementById('inscriptionForm');
         resultDiv.textContent = 'Une erreur est survenue. Veuillez réessayer dans quelques instants.';
       }
     });
+function removePostit(postit) {
+    console.log("Ajout de la classe 'removing'");
+    postit.classList.add('removing'); // Ajoute la classe avec l'animation CSS
+    postit.addEventListener('animationend', () => {
+        console.log("Animation terminée. Suppression de l'élément.");
+        postit.remove(); // Supprime le post-it une fois l'animation terminée
+        updateHiddenInput();
+    });
+}
+
+// Fonction existante : ajout des sujets
+function addSubject(subject) {
+    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
+        postit.querySelector("span").textContent
+    );
+    
+    if (existingSubjects.includes(subject)) {
+        alert(`La matière "${subject}" est déjà ajoutée !`);
+        return;
+    }
+
+    const postit = document.createElement("div");
+    postit.classList.add("subject-postit");
+
+    const subjectName = document.createElement("span");
+    subjectName.textContent = subject;
+    
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.classList.add("remove-btn");
+    removeBtn.setAttribute("type", "button"); // Ajoute cette ligne !
+    removeBtn.addEventListener("click", () => {
+        removePostit(postit); // Inclut l'animation de suppression
+        updateHiddenInput();
+    });
+    
+    postit.appendChild(subjectName);
+    postit.appendChild(removeBtn);
+    subjectsContainer.appendChild(postit);
+    updateHiddenInput();
+}
+
+
+
+
+

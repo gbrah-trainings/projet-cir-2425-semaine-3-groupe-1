@@ -63,7 +63,7 @@ function filterSubjects() {
     const input = document.getElementById('subject-input');
     const filter = input.value.toLowerCase();
     const list = document.getElementById('subject-list');
-    list.innerHTML = ''; // Clear previous suggestions
+    list.innerHTML = ''; 
 
     // Ajouter les matières correspondant à la recherche
     subjects.forEach(subject => {
