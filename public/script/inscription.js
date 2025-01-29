@@ -70,7 +70,7 @@ const form = document.getElementById('inscriptionForm');
           } else {
             resultDiv.className = "success";
             resultDiv.textContent = 'Inscription réussie !';
-                  
+            window.location.href = "./login.html";
           }
         }
       } catch (error) {
