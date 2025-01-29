@@ -146,6 +146,16 @@
     justify-content: center;
 }
 
+.error{
+    color:red;
+    text-align: center;
+}
+
+.success{
+    color:green;
+    text-align: center;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header-container {

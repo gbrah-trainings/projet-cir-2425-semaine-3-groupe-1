@@ -82,9 +82,12 @@ const form = document.getElementById('inscriptionForm');
           const message = await response.json();
           
           if(message.error){
+            resultDiv.className = "error";
             resultDiv.textContent = message.error;
           } else {
-            resultDiv.textContent = 'Données soumises avec succès !';      
+            resultDiv.className = "success";
+            resultDiv.textContent = 'Inscription réussie !';
+                  
           }
         }
       } catch (error) {
