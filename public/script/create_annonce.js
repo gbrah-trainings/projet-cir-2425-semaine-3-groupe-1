@@ -1,3 +1,7 @@
+// Lire le cookie et voir si on est connecté
+const storedUserData = localStorage.getItem('user');
+if(!storedUserData) window.location.href = "login.html";
+
 function addAvailability() {
     const day = document.getElementById('availability-day').value;
     const start = document.getElementById('availability-start').value;

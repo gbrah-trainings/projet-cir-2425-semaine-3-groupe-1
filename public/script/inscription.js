@@ -1,3 +1,6 @@
+// On déconnecte l'utilisateur s'il arrive sur cette page.
+localStorage.clear();
+
 const subjects = ["Mathématiques", "Sciences", "Informatique", "Français", "Anglais", "Physique", "Chimie", "Biologie", "Histoire", "Géographie"];
 const subjectInput = document.getElementById("teaching-subject");
 const autocompleteList = document.getElementById("autocomplete-list");
