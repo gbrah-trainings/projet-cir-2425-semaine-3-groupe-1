@@ -1,0 +1,351 @@
+.body-text {
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 1.5rem 0;
+}
+
+.header-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.footer {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.footer-text {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto; 
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #6a11cb;
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: black;
+}
+
+.radius-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.radius-line input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: #6a11cb;
+}
+
+.radius-line label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#radius-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    text-align: center;
+}
+
+#radius-input:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 4px rgba(106, 17, 203, 0.5);
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+.input-group textarea {
+    resize: none;
+}
+
+.availability-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.availability-form select,
+.availability-form input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.availability-form select:focus,
+.availability-form input:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 4px rgba(106, 17, 203, 0.5);
+}
+
+.availability-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.availability-item {
+    background-color: #2140ec;
+    animation: slideIn 0.5s ease-out;
+    color:white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.availability-item span {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.availability-item button {
+    background-color: #6a11cb;
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.availability-item button:hover {
+    background-color: #2575fc;
+}
+
+
+.btn {
+    background-color: #6a11cb;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+}
+
+.btn:hover {
+    background-color: #2575fc;
+}
+
+.autocomplete {
+    position: relative;
+    width: 100%;
+}
+
+#subject-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.autocomplete-item {
+    padding: 0.5rem;
+    cursor: pointer;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.autocomplete-item:hover {
+    background-color: #e0e7f3;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.subject-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.subject-item {
+    background-color: #2575fc;
+    color:white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subject-item span {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.subject-item button {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+.subject-item button:hover {
+    background-color: #ffffff;
+}
+
+/* Animation de l'élément qui apparaît avec un effet de glissement et fondu */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animation pour la suppression avec réduction et fondu */
+@keyframes removeItem {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+.availability-item.removing,
+.subject-item.removing {
+    animation: removeItem 0.5s ease-in forwards;
+}
+
+/* Animation pour l'ajout avec élargissement et fondu */
+@keyframes addItem {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.subject-item.adding {
+    animation: addItem 0.5s ease-out forwards;
+}
+
+/* Animation de suppression avec glissement vers le bas */
+@keyframes slideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0); /* L'élément commence à sa position normale */
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px); /* L'élément descend et devient transparent */
+    }
+}
+
+.subject-item.removing {
+    animation: slideOut 0.5s ease-out forwards; /* Animation de suppression */
+}
+
+

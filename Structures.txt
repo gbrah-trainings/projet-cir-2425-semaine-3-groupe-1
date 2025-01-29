@@ -1,0 +1,49 @@
+User
+    ID
+    isAdmin (Boolean)
+    Photo (url (String))
+    nom (String)
+    prénom (String)
+    ville (String)
+    genre (Int 0, 1, 2)
+    tel (String)
+    mail (String)
+    mdp_hashed (String)
+    niveau d'études (String)
+    Liste des compétences (List de String)
+    nb de cours suivis (Int)
+    nb de mentorats effectués (Int)
+    Liste des annonces postées (List d'ID)
+
+Annonce
+
+    ID
+    ID du profil (Int)
+    Matière (String)
+    Adresse du cours (String)
+    Complément (String)
+    Disponibilité du prof/aprenti dans un rayon de ... km (Int)
+    Ville (String - récupérée depuis le profil)
+
+    Annonce_mentor
+
+        Complément d'informations (optionnel) (String)
+        Date de début (Date)
+        Disponibilités du mentor (Liste de plages horaires)
+        Distanciel / présentiel (Boolean)
+
+    Annonce_apprenant
+
+        (rien de plus)
+
+
+
+Conversation
+
+    IDConv
+    Messages (json décris ci dessous)
+    ID Prof (Int)
+    ID Eleve (Int) 
+
+JSON messages:
+{{id: 0, user: IdUser, timeSent:XXX, content: "apagnan"}, {id:1, user: IDUser2, timesent:XXX, content:"quoicoubeh"}}
