@@ -6,6 +6,8 @@ async function getUserInfo(userID, parametre) {
 
 
 async function setUserInfo(userID, parametre, valeur) {
+
+
     try {
         const response = await fetch(`/updateUser/${userID}`, {
             method: 'PUT',
@@ -272,23 +274,63 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Sauvegarder les modifications du profil
     saveButton.addEventListener("click", function () {
-        userProfile.firstName = document.getElementById("edit-firstname").value;
-        userProfile.lastName = document.getElementById("edit-lastname").value;
-        userProfile.email = document.getElementById("edit-email").value;
-        userProfile.education = document.getElementById("edit-education").value;
+        // Récupération et nettoyage des entrées utilisateur
+        let firstName = document.getElementById("edit-firstname").value.trim();
+        let lastName = document.getElementById("edit-lastname").value.trim();
+        let email = document.getElementById("edit-email").value.trim();
+        let education = document.getElementById("edit-education").value.trim();
 
-        // TODO : gérer les erreurs
-        setUserInfo(user_id, "name",  document.getElementById("edit-firstname").value);
-        setUserInfo(user_id, "surname",  document.getElementById("edit-lastname").value);
-        setUserInfo(user_id, "email",  document.getElementById("edit-email").value);
-        setUserInfo(user_id, "niveauEtudes",  document.getElementById("edit-education").value);
+        // Vérifications des champs
+        const nameRegex = /^[a-zA-ZÀ-ÿ' -]{1,50}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        updateProfile(); // Mettre à jour le profil sur la page
+        if (!nameRegex.test(firstName)) {
+            alert("Prénom invalide");
+            return;
+        }
+        if (!nameRegex.test(lastName)) {
+            alert("Nom invalide");
+            return;
+        }
+        if (!emailRegex.test(email)) {
+            alert("Email invalide");
+            return;
+        }
+        if (education.length > 100) {
+            alert("Le champ d'éducation est trop long");
+            return;
+        }
 
+        // Protection contre les attaques XSS (échapper les entrées)
+        function sanitize(input) {
+            return input.replace(/[&<>'"/]/g, function (c) {
+                return {'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;', '/': '&#x2F;'}[c];
+            });
+        }
+
+        firstName = sanitize(firstName);
+        lastName = sanitize(lastName);
+        email = sanitize(email);
+        education = sanitize(education);
+
+        // Mise à jour des données utilisateur sécurisées
+        userProfile.firstName = firstName;
+        userProfile.lastName = lastName;
+        userProfile.email = email;
+        userProfile.education = education;
+
+        // Envoi sécurisé des informations
+        setUserInfo(user_id, "name", firstName);
+        setUserInfo(user_id, "surname", lastName);
+        setUserInfo(user_id, "email", email);
+        setUserInfo(user_id, "niveauEtudes", education);
+
+        updateProfile(); // Met à jour l'affichage du profil
 
         modal.style.display = "none";
         enableScroll(); // Réactiver le défilement
     });
+
 
     // Ouvrir le modal de confirmation de suppression
     deleteAccountButton.addEventListener("click", function () {
