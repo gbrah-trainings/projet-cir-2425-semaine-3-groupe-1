@@ -1,4 +1,4 @@
-const mentorsData = [
+let mentorsData = [
     { name: "Didier", subject: "Techno", image: "./img/Prof1.jpg", category: "science" },
     { name: "Bertrand", subject: "Physique", image: "./img/Prof2.png", category: "science" },
     { name: "Patrick", subject: "Maths", image: "./img/Prof1.jpg", category: "math" },
@@ -6,7 +6,7 @@ const mentorsData = [
     { name: "Juliette", subject: "Anglais", image: "./img/Prof1.jpg", category: "langues" }
 ];
 
-const studentsData = [
+let studentsData = [
     { name: "Sarah", subject: "Physique", image: "./img/Prof1.jpg", category: "science" },
     { name: "Lucas", subject: "Maths", image: "./img/Prof2.png", category: "math" },
     { name: "Nina", subject: "Informatique", image: "./img/Prof1.jpg", category: "informatique" },
@@ -125,3 +125,12 @@ if(storedUserData){
 
 
 // Sinon est connecté, afficher le nom et la photo
+
+//Creation des fonctions à base de l'api
+async function getUserInfo(userID, parametre) {
+    const response = await fetch(`/getUser/${userID}?parametre=${parametre}`);
+    const data = await response.json();
+    console.log(data);
+}   
+
+//selection de tout les comptes avec des mentorats 
