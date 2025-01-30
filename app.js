@@ -8,6 +8,10 @@ import cors from 'cors';
 
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
 
+import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
+
+import {WebSocketServer,WebSocket} from 'ws';
+
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -158,9 +162,39 @@ app.post('/loginSubmit', async (req, res) => {
 
 
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+const wss = new WebSocketServer({server});
+
+wss.on('connection',(ws)=>{
+  console.log("New client connected");
+
+  ws.on('message',(msg) => {
+    let message = JSON.parse(msg);
+    console.log('Message recieved:', message);
+    console.log(message['MessageValue']);
+
+    createConv(message['userID'],message['MessageValue'],message['userID'],message['Recipient'])
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(message));  // Send the message to all other clients
+      }
+    });
+  });
+
+  ws.on('close',()=>{
+    console.log("Client disconnected");
+  });
+});
+
+wss.onerror = (error) => {
+  //console.error("WebSocket error:",error);
+  console.log("webSocket Error");
+};
+
 
 //------------------------------------<<<Create_Annonces>>>--------------------------------
 
@@ -180,7 +214,6 @@ app.post('/submitAnnonce', (req, res) => {
       res.status(500).json({ error: "Une erreur est survenue, veuillez réessayer plus tard." });
   }
 });
-
 
 /* =================== API Delete Compte =================== */
 
@@ -280,4 +313,17 @@ app.get('/getAllTeacherPosts', async (req, res) => {
 app.get('/profile', (req, res) => {
   const id = req.query.id; // Récupération de l'ID depuis l'URL
   res.json({ id }); // Renvoie l'ID au client
+});
+
+app.get('/getAllConvbyUser/:userID', async (req, res) => {
+  try{
+    const userID = parseInt(req.params.userID);
+
+    const Convs = getAllConvByID(userID)
+
+    res.status(200).json({ allCOnvs: Convs });
+  }
+  catch(error){
+
+  }
 });
