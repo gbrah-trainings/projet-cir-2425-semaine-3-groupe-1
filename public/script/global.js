@@ -5,11 +5,19 @@ function updateHeader() {
         console.log(userData);
         const navList = document.querySelector('.header-nav');
         if (navList) {
-            const newListItem = document.createElement('li');
-            const newLink = document.createElement('a');
+            let newListItem = document.createElement('li');
+            let newLink = document.createElement('a');
             newLink.href = 'profil.html';
             newLink.className = 'header-link';
             newLink.textContent = 'Espace personnel';
+            newListItem.appendChild(newLink);
+            navList.appendChild(newListItem);
+
+            newListItem = document.createElement('li');
+            newLink = document.createElement('a');
+            newLink.href = 'login.html';
+            newLink.className = 'header-link';
+            newLink.textContent = 'Déconnexion';
             newListItem.appendChild(newLink);
             navList.appendChild(newListItem);
         }
