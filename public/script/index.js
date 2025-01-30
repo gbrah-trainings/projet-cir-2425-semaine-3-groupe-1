@@ -69,6 +69,11 @@ document.getElementById('apply-filters').addEventListener('click', () => {
     }
 });
 
+
+// Appeler la fonction pour remplir les sections avec les données
+generateAnnonces(mentorsData, 'mentors-container');
+generateAnnonces(studentsData, 'students-container');
+
 // Gérer le défilement des annonces
 document.querySelectorAll('.left-arrow').forEach((arrow, index) => {
     arrow.addEventListener('click', () => {

@@ -676,6 +676,16 @@ body {
     border: 1px solid #ccc;
 }
 
+.filters button {
+    cursor: pointer;
+    background-color: #6a11cb;
+    color:white;
+}
+
+.filters button:hover{
+    background-color:#2575fc;
+}
+
 .annonces-wrapper {
     position: relative;
     overflow: hidden;
@@ -721,7 +731,7 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(81, 36, 148, 0.5);
     color: white;
     border: none;
     padding: 10px;
@@ -733,5 +743,8 @@ body {
 .right-arrow { right: 5px; }
 
 .annonces-arrow:hover {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(51, 55, 180, 0.8); 
 }
+
+
+
