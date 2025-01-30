@@ -1,4 +1,4 @@
-let mentorsData = [
+/*let mentorsData = [
     { name: "Didier", subject: "Techno", image: "./img/Prof1.jpg", category: "science" },
     { name: "Bertrand", subject: "Physique", image: "./img/Prof2.png", category: "science" },
     { name: "Patrick", subject: "Maths", image: "./img/Prof1.jpg", category: "math" },
@@ -13,7 +13,7 @@ let studentsData = [
     { name: "Mickaël", subject: "Chimie", image: "./img/Prof2.png", category: "science" },
     { name: "Claire", subject: "Biologie", image: "./img/Prof1.jpg", category: "science" }
 ];
-
+*/
 function generateAnnonces(data, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -41,9 +41,18 @@ function generateAnnonces(data, containerId) {
         container.appendChild(card);
     });
 }
+let mentorsData = [];
+async function getAllTeachers() {
+    const response = await fetch('/getAllTeachersPosts');
+    const data = await response.json();
+    console.log(data);
+    //on récupère la liste des annonces, qu'on va mettre en forme dans mentors data
+    mentorsData = data;
+    generateAnnonces(mentorsData, 'mentors-container');
+}
+getAllTeachers();
 
-generateAnnonces(mentorsData, 'mentors-container');
-generateAnnonces(studentsData, 'students-container');
+
 
 document.getElementById('apply-filters').addEventListener('click', () => {
     const typeFilter = document.getElementById('filter-type').value;
@@ -146,12 +155,4 @@ async function getUserInfo(userID, parametre) {
 
 //selectionner tout les utilisateurs 
 
-async function getAllTeachers() {
-    const response = await fetch('/getAllTeachersPosts');
-    const data = await response.json();
-    console.log(data);
-    //on récupère la liste des annonces, qu'on va mettre en forme dans mentors data
-    mentorsData = data;
-    generateAnnonces(mentorsData, 'mentors-container');
-}
-getAllTeachers();
+

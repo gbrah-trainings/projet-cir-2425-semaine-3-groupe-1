@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
 const client = new MongoClient(uri);
 import bcrypt from 'bcrypt';
-export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser, getAllTeacherPosts };
+export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser, getAllTeacherPosts, getAllStudentPosts };
 
 
 
@@ -224,4 +224,38 @@ async function getAllTeacherPosts() {
   }
 }
 
-// Export pour l'utiliser dans `app.js`
+async function getAllStudentPosts() {
+  try {
+      // Connexion à la base de données
+      const db = client.db("users");
+      const collection = db.collection("users");
+
+      // Récupérer uniquement les `postedSearchs` des utilisateurs ayant des annonces `IsTeacher: false`
+      const users = await collection.find(
+          { "postedSearchs.IsTeacher": false }, // Filtrer les utilisateurs qui ont au moins une annonce `IsTeacher: false`
+          { projection: { postedSearchs: 1, _id: 0, UserID: 1 } } // Ne récupérer que `postedSearchs` et `UserID`
+      ).toArray();
+
+      // Extraire toutes les annonces qui ont `IsTeacher: false`
+      let studentPosts = [];
+      users.forEach(user => {
+          user.postedSearchs.forEach(post => {
+              if (post.IsTeacher === false) {
+                  studentPosts.push({ ...post, UserID: user.UserID });
+              }
+          });
+      });
+
+      if (studentPosts.length > 0) {
+          console.log("Annonces des étudiants récupérées avec succès.");
+          return studentPosts;
+      } else {
+          console.log("Aucune annonce trouvée pour les étudiants.");
+          return [];
+      }
+
+  } catch (err) {
+      console.error("Erreur lors de la récupération des annonces des étudiants :", err);
+      throw err;
+  }
+}
