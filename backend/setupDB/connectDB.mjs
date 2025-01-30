@@ -71,8 +71,6 @@ async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Te
     console.log("Nouvel utilisateur ajouté dans la base de données :", result);
 
     //fermeture de la connexion à la DB
-    await closeDB();
-
 }
 
 
@@ -80,7 +78,6 @@ async function checkAllUsernamesInDB(){
     const db = client.db("users");
     const collection = db.collection("users");
     const result = await collection.find({}).toArray();
-    await closeDB();
 }
 
 async function deleteUserInDB(UserID){
@@ -88,7 +85,6 @@ async function deleteUserInDB(UserID){
     const collection = db.collection("users");
     const result = await collection.deleteOne({UserID:UserID});
     console.log("Utilisateur supprimé de la base de données :", result);
-  await closeDB();
   }
 
 
@@ -122,7 +118,6 @@ async function clearDB(){
   const collection = db.collection("users");
   const result = await collection.deleteMany({});
   console.log("Base de données vidée :", result);
-  await closeDB();
 }
 
 
@@ -191,5 +186,5 @@ async function setterUser(parametre, valeur, id) {
 }
 
 
-/* =================================== TEST SUR LA DB ======================= */
+/* =================================== TEST SUR LA DB ============================= */
 
