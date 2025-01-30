@@ -104,26 +104,32 @@ if(storedUserData){
     const userData = JSON.parse(storedUserData);
 
     const headerNav = document.querySelector('.header-nav');
-    const newListItem = document.createElement('li');
-    const newLink = document.createElement('a');
-
+    
+    let newListItem = document.createElement('li');
+    let newLink = document.createElement('a');
     newLink.href = 'profil.html';
     newLink.className = 'header-link';
     newLink.textContent = 'Espace personnel';
+    newListItem.appendChild(newLink);
+    headerNav.appendChild(newListItem);
 
+    newListItem = document.createElement('li');
+    newLink = document.createElement('a');
+    newLink.href = 'login.html';
+    newLink.className = 'header-link';
+    newLink.textContent = 'Déconnexion';
     newListItem.appendChild(newLink);
     headerNav.appendChild(newListItem);
 
 }else{
 
     const headerNav = document.querySelector('.header-nav');
-    const newListItem = document.createElement('li');
-    const newLink = document.createElement('a');
-
+    
+    let newListItem = document.createElement('li');
+    let newLink = document.createElement('a');
     newLink.href = 'inscription.html';
     newLink.className = 'header-link';
     newLink.textContent = 'Inscription';
-
     newListItem.appendChild(newLink);
     headerNav.appendChild(newListItem);
 }
