@@ -13,7 +13,7 @@
     <section class="messagerie">
         <div class="messagerie-container">
             <h2 class="messagerie-title">Messagerie</h2>
-            <div class="chat-box">
+            <div class="chat-box" id="ChatBox">
                 <div class="message received">
                     <p class="message-text">Bonjour, comment puis-je vous aider ?</p>
                     <span class="message-time">12:30</span>
@@ -23,14 +23,15 @@
                     <span class="message-time">12:32</span>
                 </div>
             </div>
-            <div class="message-input">
-                <textarea placeholder="Écrivez votre message..." rows="4"></textarea>
-                <button class="send-btn">Envoyer</button>
-            </div>
+            <form class="message-input" id="Input">
+                <textarea placeholder="Écrivez votre message..." rows="2" id="Message"></textarea>
+                <button type="submit" id="SendBtn" class="send-btn">Envoyer</button>
+            </form>
         </div>
     </section>
     <footer class="footer"></footer>
 
+    <script src="script/Messagerie.js"></script>
     <script src="script/global.js"></script>
     
 </body>
