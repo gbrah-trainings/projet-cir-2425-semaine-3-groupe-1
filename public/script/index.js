@@ -1,26 +1,27 @@
+// Données dynamiques pour les mentors et étudiants
 const mentorsData = [
-    { name: "Didier", subject: "Techno", image: "./img/Prof1.jpg", category: "science" },
-    { name: "Bertrand", subject: "Physique", image: "./img/Prof2.png", category: "science" },
-    { name: "Patrick", subject: "Maths", image: "./img/Prof1.jpg", category: "math" },
-    { name: "Bélatrice", subject: "Français", image: "./img/Prof1.jpg", category: "langues" },
-    { name: "Juliette", subject: "Anglais", image: "./img/Prof1.jpg", category: "langues" }
+    { name: "Didier", subject: "Prof de Techno", image: "./img/Prof1.jpg" },
+    { name: "Bertrand", subject: "Prof de Physique", image: "./img/Prof2.png" },
+    { name: "Patrick", subject: "Prof de Maths", image: "./img/Prof1.jpg" },
+    { name: "Bélatrice", subject: "Prof de Français", image: "./img/Prof1.jpg" },
+    { name: "Juliette", subject: "Prof d'Anglais", image: "./img/Prof1.jpg" }
 ];
 
 const studentsData = [
-    { name: "Sarah", subject: "Physique", image: "./img/Prof1.jpg", category: "science" },
-    { name: "Lucas", subject: "Maths", image: "./img/Prof2.png", category: "math" },
-    { name: "Nina", subject: "Informatique", image: "./img/Prof1.jpg", category: "informatique" },
-    { name: "Mickaël", subject: "Chimie", image: "./img/Prof2.png", category: "science" },
-    { name: "Claire", subject: "Biologie", image: "./img/Prof1.jpg", category: "science" }
+    { name: "Sarah", subject: "Étudiante en Physique", image: "./img/Prof1.jpg" },
+    { name: "Lucas", subject: "Étudiant en Mathématiques", image: "./img/Prof2.png" },
+    { name: "Nina", subject: "Étudiante en Informatique", image: "./img/Prof1.jpg" },
+    { name: "Mickaël", subject: "Étudiant en Chimie", image: "./img/Prof2.png" },
+    { name: "Claire", subject: "Étudiante en Biologie", image: "./img/Prof1.jpg" }
 ];
 
+// Fonction pour générer les cartes d'annonces
 function generateAnnonces(data, containerId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = "";
     data.forEach(item => {
         const card = document.createElement('div');
         card.classList.add('annonce-card');
-        
+
         const img = document.createElement('img');
         img.src = item.image;
         img.alt = `Image annonce ${item.name}`;
@@ -68,6 +69,10 @@ document.getElementById('apply-filters').addEventListener('click', () => {
         generateAnnonces(filteredStudents, 'students-container');
     }
 });
+
+// Appeler la fonction pour remplir les sections avec les données
+generateAnnonces(mentorsData, 'mentors-container');
+generateAnnonces(studentsData, 'students-container');
 
 // Gérer le défilement des annonces
 document.querySelectorAll('.left-arrow').forEach((arrow, index) => {
@@ -123,5 +128,4 @@ if(storedUserData){
     headerNav.appendChild(newListItem);
 }
 
-
-// Sinon est connecté, afficher le nom et la photo
+    
