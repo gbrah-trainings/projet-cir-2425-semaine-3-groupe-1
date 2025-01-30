@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
 const client = new MongoClient(uri);
 import bcrypt from 'bcrypt';
-export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser };
+export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser, getAllTeacherPosts };
 
 
 
@@ -188,3 +188,40 @@ async function setterUser(parametre, valeur, id) {
 
 /* =================================== TEST SUR LA DB ============================= */
 
+async function getAllTeacherPosts() {
+  try {
+      // Connexion à la base de données
+      const db = client.db("users");
+      const collection = db.collection("users");
+
+      // Récupérer uniquement les `postedSearchs` des utilisateurs ayant des annonces `IsTeacher: true`
+      const users = await collection.find(
+          { "postedSearchs.IsTeacher": true }, // Filtrer les utilisateurs qui ont au moins une annonce `IsTeacher: true`
+          { projection: { postedSearchs: 1, _id: 0, UserID: 1 } } // Ne récupérer que `postedSearchs` et `UserID`
+      ).toArray();
+
+      // Extraire toutes les annonces qui ont `IsTeacher: true`
+      let teachingPosts = [];
+      users.forEach(user => {
+          user.postedSearchs.forEach(post => {
+              if (post.IsTeacher === true) {
+                  teachingPosts.push({ ...post, UserID: user.UserID });
+              }
+          });
+      });
+
+      if (teachingPosts.length > 0) {
+          console.log("Annonces des enseignants récupérées avec succès.");
+          return teachingPosts;
+      } else {
+          console.log("Aucune annonce trouvée pour les enseignants.");
+          return [];
+      }
+
+  } catch (err) {
+      console.error("Erreur lors de la récupération des annonces des enseignants :", err);
+      throw err;
+  }
+}
+
+// Export pour l'utiliser dans `app.js`

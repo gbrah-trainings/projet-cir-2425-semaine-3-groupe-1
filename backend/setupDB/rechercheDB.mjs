@@ -1,8 +1,9 @@
-import {addNewUserInDB, client, getterUser, setterUser} from "./connectDB.mjs"
+import {client, getterUser} from "./connectDB.mjs"
 export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePost, updateCityAndArea, updatePost };
 
 //La ville et le rayon de dispo sont pris depuis le profil de l'utilisateur
 //L'id de l'utilisteur est passé par le front avec la variable de session
+//Pour l'instant c'est mit au dur le temps qu'on fasse le back
 async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
     //Envoie une annonce dans la DB
     try{
@@ -24,10 +25,6 @@ async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, compleme
         
         if(result){
             console.log("Annonce publiée avec succès");
-
-            //On remplit le champ "postedsearchs" de la ddb user
-            const annonces =  await getReducedInfos(idUser);
-            await setterUser("postedSearchs", annonces, idUser);
             return 1
         } else{
             console.log("Erreur de publication");
@@ -89,31 +86,33 @@ async function getPostInDB(idPost){
 
 async function getReducedInfos(idUser){
     //Récupère l'id, la matière, la description et le type des annonces de l'user idUser pour affichage dans profil
+    async function getReducedInfos(idUser){
+        //Récupère l'id, la matière et le type des annonces de l'user idUser pour affichage dans profil
 
-    try {
-        //Connexion à la DB
-        const db = client.db("posts");
-        const collection = db.collection("posts");
+        try {
+            //Connexion à la DB
+            const db = client.db("posts");
+            const collection = db.collection("posts");
 
-        //On récupère les annonces de l'utilisateur
-        const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1, Complement: 1}}).toArray();
+            //On récupère les annonces de l'utilisateur
+            const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1}}).toArray();
 
-        if(result){
-            console.log("Annonces récupérées"); //Retourne array vide si aucune annonce
-            return result;
+            if(result){
+                console.log("Annonces récupérées"); //Retourne array vide si aucune annonce
+                return result;
+            }
+            else{
+                console.log("Problème lors de la récupération"); //Ne devrait jamais arriver
+                return [] //On return un array vide
+            }
+        
+        } catch (err){
+            console.log("Erreur lors de la récupération des annonces de l'utilisateur: ", err);
+            throw err; //Remonte l'erreur
         }
-        else{
-            console.log("Problème lors de la récupération"); //Ne devrait jamais arriver
-            return [] //On return un array vide
-        }
-    
-    } catch (err){
-        console.log("Erreur lors de la récupération des annonces de l'utilisateur: ", err);
-        throw err; //Remonte l'erreur
     }
-}
 
-async function deletePost(idPost, idUser){
+async function deletePost(idPost){
     //Supprime l'annonce qui a l'id idPost
     try{
         //Connexion à la DB
@@ -126,9 +125,6 @@ async function deletePost(idPost, idUser){
         //On vérifie si ça a marché
         if (result.deletedCount > 0) {
             console.log("L'annonce a été supprimée");
-
-            const annonces = await getReducedInfos(idUser);
-            await setterUser("postedSearchs", annonces, idUser);
             return 1;
         } else {
             console.log("Aucune annonce trouvée");
@@ -165,7 +161,7 @@ async function updateCityAndArea(idUser, city, area){
     }
 }
 
-async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
+async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
     //Met à jour une annonce
     try{
         //Connexion à la DB
@@ -177,11 +173,6 @@ async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, comp
         const result = await collection.updateOne({PostID: idPost}, {$set : updatedFields});
         if (result.modifiedCount > 0) {
             console.log("L'annonce à été mise à jour");
-
-            //On remplit le champ "postedsearchs" de la ddb user
-            const annonces =  await getReducedInfos(idUser);
-            await setterUser("postedSearchs", annonces, idUser);
-
             return 1
         } else {
             console.log("Aucune annonce trouvée ou aucune modification nécessaire");
@@ -191,8 +182,4 @@ async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, comp
         console.error("Erreur lors de la mise à jour de l'annonce: ", err);
         throw err;
     }
-}
-
-async function filteredSearch(){
-    
 }
