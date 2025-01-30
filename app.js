@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
 
-import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
+import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -249,3 +249,24 @@ app.put('/updateUser/:userID', async (req, res) => {
   }
 });
 
+/* =================== API Getter all posts =================== */
+
+app.get('/getAllStudentPosts', async (req, res) => {
+  try {
+      const posts = await db.getAllStudentPosts();
+      res.status(200).json(posts);
+  } catch (error) {
+      console.error("Erreur lors de la récupération des annonces des étudiants :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
+app.get('/getAllTeacherPosts', async (req, res) => {
+    try {
+        const posts = await db.getAllTeacherPosts();
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des annonces des enseignants :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
