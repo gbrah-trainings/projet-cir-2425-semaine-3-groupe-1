@@ -8,7 +8,7 @@ export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, c
 
 //fonction de fermeture de la connexion à la DB
 async function closeDB(){
-  await client.close();     //à décomenter quand la connexion sera réparée
+  await client.close();     //à décomenter qua-nd la connexion sera réparée
 }
 
 //Add a new user in the DB, with explicit parameters
@@ -19,16 +19,12 @@ async function closeDB(){
 //Be aware to use this function with await 
 async function addNewUserInDB(Name, Surname, Email, Password, isAdmin, Genre, Tel, NiveauEtudes, Competences, City, Radius){
   //si l'un des paramètres est nul on retourne une erreur
-  console.log("coucou")
   if(!Name || !Surname || !Email || !Password || !Genre || !NiveauEtudes || !City){
     console.log("Un des paramètres obligatoire est nul");
     return -1;
   }
     const db = client.db("users");
-    console.log("ez")
     const collection = db.collection("users");
-    
-      console.log("ez2")
     let creationDate= new Date();
     let idUser=0;
     //on récupère le dernier idUser
@@ -158,7 +154,6 @@ async function getterUser(parametre, id) {
         throw err; // Remonte l'erreur si nécessaire
     }
 }
-console.log("bonjour ?")
 
 async function setterUser(parametre, valeur, id) {
     try {
@@ -187,7 +182,7 @@ async function setterUser(parametre, valeur, id) {
                 console.log('Aucun changement effectué');
             }
         } else {
-            console.log('Utilisateur pas trouvé.');
+            console.log('Utilisateur introuvable.');
         }
     } catch (err) {
         console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
