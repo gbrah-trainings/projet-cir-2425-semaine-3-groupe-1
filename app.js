@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
 
-import { addNewUserInDB, login } from './backend/setupDB/connectDB.mjs';
+import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -176,6 +176,76 @@ app.post('/submitAnnonce', (req, res) => {
   } catch (error) {
       console.error("Erreur lors de l'enregistrement de l'annonce :", error);
       res.status(500).json({ error: "Une erreur est survenue, veuillez réessayer plus tard." });
+  }
+});
+
+
+/* =================== API Delete Compte =================== */
+
+app.delete('/deleteUser/:userID', async (req, res) => {
+  try {
+      const userID = parseInt(req.params.userID);
+      if (!userID) {
+          return res.status(400).json({ error: "UserID requis pour la suppression" });
+      }
+
+      const result = await deleteUserInDB(userID);
+      if (!result.deleted) {
+          return res.status(404).json({ error: result.message });
+      }
+
+      res.status(200).json({ message: result.message });
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la suppression :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
+
+/* =================== API Getter info user =================== */
+app.get('/getUser/:userID', async (req, res) => {
+  try {
+      const userID = parseInt(req.params.userID);
+      const { parametre } = req.query; // Le paramètre demandé (ex: email, tel, etc.)
+
+      if (!userID || !parametre) {
+          return res.status(400).json({ error: "UserID et paramètre requis" });
+      }
+
+      const value = await getterUser(parametre, userID);
+      if (value === null) {
+          return res.status(404).json({ error: `Utilisateur introuvable ou paramètre "${parametre}" inexistant.` });
+      }
+
+      res.status(200).json({ [parametre]: value });
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
+/* =================== API Setter info user =================== */
+app.put('/updateUser/:userID', async (req, res) => {
+  try {
+      const userID = parseInt(req.params.userID);
+      const updateData = req.body; // Contient les nouvelles valeurs
+
+      if (!userID || Object.keys(updateData).length === 0) {
+          return res.status(400).json({ error: "UserID et données requises pour la mise à jour" });
+      }
+
+      const result = await setterUser(userID, updateData);
+      if (!result.success) {
+          return res.status(404).json({ error: result.message });
+      }
+
+      res.status(200).json({ message: result.message });
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la mise à jour :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
   }
 });
 
