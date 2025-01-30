@@ -141,3 +141,10 @@ document.getElementById("question").addEventListener("input", updateButtonState)
 document.querySelectorAll('input[name="exercice"]').forEach(input => 
     input.addEventListener("change", updateButtonState)
 );
+
+
+//----------------------------------<<<API Gemini>>>-------------------------------------
+
+require('dotenv').config();
+const geminiRoutes = require('./backend/gemini');
+app.use('/api/gemini', geminiRoutes);
