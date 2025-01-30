@@ -4,8 +4,9 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
+import cors from 'cors';
 
-import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
+import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +17,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.static('public'));
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -230,18 +232,19 @@ app.get('/getUser/:userID', async (req, res) => {
 app.put('/updateUser/:userID', async (req, res) => {
   try {
       const userID = parseInt(req.params.userID);
-      const updateData = req.body; // Contient les nouvelles valeurs
+      const { parametre, valeur } = req.body;
 
-      if (!userID || Object.keys(updateData).length === 0) {
-          return res.status(400).json({ error: "UserID et données requises pour la mise à jour" });
+      if (!userID || !parametre || valeur === undefined) {
+          return res.status(400).json({ error: "UserID, paramètre et valeur sont requis pour la mise à jour." });
       }
 
-      const result = await setterUser(userID, updateData);
-      if (!result.success) {
-          return res.status(404).json({ error: result.message });
+      const result = await setterUser(parametre, valeur, userID);
+
+      if (result === null) {
+          return res.status(404).json({ error: `Aucun utilisateur trouvé avec l'ID ${userID}.` });
       }
 
-      res.status(200).json({ message: result.message });
+      res.status(200).json({ message: `Mise à jour réussie : ${parametre} = ${valeur} pour l'utilisateur ${userID}` });
 
   } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);
@@ -249,3 +252,32 @@ app.put('/updateUser/:userID', async (req, res) => {
   }
 });
 
+/* =================== API Getter all posts =================== */
+
+app.get('/getAllStudentPosts', async (req, res) => {
+  try {
+      const posts = await db.getAllStudentPosts();
+      res.status(200).json(posts);
+  } catch (error) {
+      console.error("Erreur lors de la récupération des annonces des étudiants :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
+app.get('/getAllTeacherPosts', async (req, res) => {
+    try {
+        const posts = await db.getAllTeacherPosts();
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des annonces des enseignants :", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+
+/* =================== Ouvrir le profil selon l'ID =================== */
+
+app.get('/profile', (req, res) => {
+  const id = req.query.id; // Récupération de l'ID depuis l'URL
+  res.json({ id }); // Renvoie l'ID au client
+});
