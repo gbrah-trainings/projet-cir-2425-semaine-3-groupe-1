@@ -117,10 +117,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Fonction pour remplir les informations du profil dans la page
     function updateProfile() {
         document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
-        document.getElementById("profile-lastname").placeholder = userProfile.lastName;
-        document.getElementById("profile-firstname").placeholder = userProfile.firstName;
-        document.getElementById("profile-email").placeholder = userProfile.email;
-        document.getElementById("profile-education").placeholder = userProfile.education;
+        document.getElementById("profile-lastname").textContent = userProfile.lastName;
+        document.getElementById("profile-firstname").textContent = userProfile.firstName;
+        document.getElementById("profile-email").textContent = userProfile.email;
+        document.getElementById("profile-education").textContent = userProfile.education;
         document.getElementById("courses-taken").textContent = userProfile.courses.join(", ");
         document.getElementById("mentorships-done").textContent = userProfile.mentorships;
         document.getElementById("profile-courses-count").textContent = userProfile.courses.length;

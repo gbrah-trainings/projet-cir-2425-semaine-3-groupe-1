@@ -84,11 +84,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         education: (await getUserInfo(user_id, "niveauEtudes")).niveauEtudes,
         courses: (await getUserInfo(user_id, "competences")).competences,
         mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
+
         mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
-        mentores: [5,4,6,1], // Les ID des élèves du détenteur du compte
+        mentores: [5,4,10,1], // Les ID des élèves du détenteur du compte
+        
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees
     };
+
+    // Photo de profil de l'utilisateur 
+    document.getElementById("profile-picture").src = ("./img/profiles/"+user_id+".png");
 
     // Fonction pour remplir les informations du profil dans la page
     function updateProfile() {
