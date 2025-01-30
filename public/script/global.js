@@ -7,7 +7,7 @@ function updateHeader() {
         if (navList) {
             let newListItem = document.createElement('li');
             let newLink = document.createElement('a');
-            newLink.href = 'profil.html';
+            newLink.href = 'edit_profil.html';
             newLink.className = 'header-link';
             newLink.textContent = 'Espace personnel';
             newListItem.appendChild(newLink);

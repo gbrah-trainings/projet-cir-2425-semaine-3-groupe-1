@@ -2,28 +2,34 @@ async function getUserInfo(userID, parametre) {
     const response = await fetch(`/getUser/${userID}?parametre=${parametre}`);
     const data = await response.json();
     return data;
-
 }   
+
+async function setUserInfo(userID, parametre, value) {
+    const response = await fetch(`/updateUser/${userID}?parametre=${parametre}?value=${value}`);
+    const data = await response.json();
+    return data;
+}   
+
+// DEBUG ONLY
+setUserInfo(1,"name","Georges");
+
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    // TEMPORAIRE. A RECUPERER DEPUIS LA PAGE PRECEDENTE EN POST
-    const user_id = 1;
+    // TEMPORAIRE. A RECUPERER DEPUIS LA SESSION
+    let user_id = 0;
 
-    // Si le profil consulté est le sien
     // On souhaite afficher le profil de l'utilisateur connecté
     const storedUserData = localStorage.getItem('user');
 
     if (storedUserData) {
-
         const userData = JSON.parse(storedUserData);
-        if(user_id == userData.id) window.location.href = "edit_profil.html"
-
+        user_id = userData.id
     } else {
         window.location.href = "index.html"
     }
 
-    // On vérifie que l'utilisateur existe.
+    // On vérifie que l'utilisateur existe... Ouais bon, on ne sait jamais hein ^^'
     const test = (await getUserInfo(user_id, "name")).name;
     if (!test) window.location.href = "index.html";
 
@@ -56,8 +62,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         annoncesRecherchees.push({title: annonce.Subject, description:"", image: "./img/profiles.png"})
     });
 
-    // Récuperer le nombres de cours donnés ("mentorships")
-
 
     // Récupérer la liste des professeurs
     // TODO
@@ -65,7 +69,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Récuperer la liste des élèves
     // TODO
 
-    // Données fictives pour le profil
     const userProfile = {
         firstName: (await getUserInfo(user_id, "name")).name,
         lastName: (await getUserInfo(user_id, "surname")).surname,
@@ -89,13 +92,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         annoncesRecherchees: annoncesRecherchees
     };
 
+    // Photo de profil de l'utilisateur connecté
+    document.getElementById("profile-picture").src = ("./img/profiles/"+user_id+".png");
+
     // Fonction pour remplir les informations du profil dans la page
     function updateProfile() {
         document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
-        document.getElementById("profile-lastname").textContent = userProfile.lastName;
-        document.getElementById("profile-firstname").textContent = userProfile.firstName;
-        document.getElementById("profile-email").textContent = userProfile.email;
-        document.getElementById("profile-education").textContent = userProfile.education;
+        document.getElementById("profile-lastname").placeholder = userProfile.lastName;
+        document.getElementById("profile-firstname").placeholder = userProfile.firstName;
+        document.getElementById("profile-email").placeholder = userProfile.email;
+        document.getElementById("profile-education").placeholder = userProfile.education;
         document.getElementById("courses-taken").textContent = userProfile.courses.join(", ");
         document.getElementById("mentorships-done").textContent = userProfile.mentorships;
         document.getElementById("profile-courses-count").textContent = userProfile.courses.length;
@@ -156,10 +162,21 @@ document.addEventListener("DOMContentLoaded", async function () {
             description.classList.add("annonce-description");
             description.textContent = item.description;
 
+            // Créer le bouton de suppression
+            const deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-annonce-button");
+            deleteButton.textContent = "Supprimer";
+
+            // Ajouter l'événement de suppression
+            deleteButton.addEventListener("click", function () {
+                container.removeChild(card);
+            });
+
             // Ajouter les éléments à la carte
             card.appendChild(img);
             card.appendChild(title);
             card.appendChild(description);
+            card.appendChild(deleteButton);
 
             // Ajouter la carte au conteneur
             container.appendChild(card);
@@ -200,6 +217,70 @@ document.addEventListener("DOMContentLoaded", async function () {
     function enableScroll() {
         document.body.classList.remove('no-scroll');
     }
+
+    // Gestion des modals : édition et suppression du profil
+    const editButton = document.getElementById("edit-profile-button");
+    const modal = document.getElementById("edit-profile-modal");
+    const cancelButton = document.getElementById("cancel-edit-button");
+    const saveButton = document.getElementById("save-profile-button");
+
+    const deleteAccountButton = document.getElementById("delete-account-button");
+    const deleteConfirmationModal = document.getElementById("delete-confirmation-modal");
+    const confirmDeleteButton = document.getElementById("confirm-delete-button");
+    const cancelDeleteButton = document.getElementById("cancel-delete-button");
+
+    // Ouvrir le modal pour modifier le profil
+    editButton.addEventListener("click", function () {
+        document.getElementById("edit-firstname").value = userProfile.firstName;
+        document.getElementById("edit-lastname").value = userProfile.lastName;
+        document.getElementById("edit-email").value = userProfile.email;
+        document.getElementById("edit-education").value = userProfile.education;
+
+        modal.style.display = "flex";
+        disableScroll(); // Désactiver le défilement lors de l'ouverture du modal
+    });
+
+    // Annuler l'édition du profil
+    cancelButton.addEventListener("click", function () {
+        modal.style.display = "none";
+        enableScroll(); // Réactiver le défilement lors de la fermeture du modal
+    });
+
+    // Sauvegarder les modifications du profil
+    saveButton.addEventListener("click", function () {
+        userProfile.firstName = document.getElementById("edit-firstname").value;
+        userProfile.lastName = document.getElementById("edit-lastname").value;
+        userProfile.email = document.getElementById("edit-email").value;
+        userProfile.education = document.getElementById("edit-education").value;
+
+        updateProfile(); // Mettre à jour le profil sur la page
+
+        // TODO : modifier le profil dans le serveur
+        setUserInfo(user_id, "name", 1);
+
+        modal.style.display = "none";
+        enableScroll(); // Réactiver le défilement
+    });
+
+    // Ouvrir le modal de confirmation de suppression
+    deleteAccountButton.addEventListener("click", function () {
+        deleteConfirmationModal.style.display = "flex";
+        disableScroll(); // Désactiver le défilement lors de l'ouverture du modal
+    });
+
+    // Confirmer la suppression du compte
+    confirmDeleteButton.addEventListener("click", function () {
+        alert("Le compte a été supprimé.");
+        window.location.href = "/home"; // Simuler la suppression et redirection
+        deleteConfirmationModal.style.display = "none";
+        enableScroll(); // Réactiver le défilement après suppression
+    });
+
+    // Annuler la suppression du compte
+    cancelDeleteButton.addEventListener("click", function () {
+        deleteConfirmationModal.style.display = "none";
+        enableScroll(); // Réactiver le défilement si l'utilisateur annule
+    });
 
     // Initialiser le profil sur la page
     updateProfile();
