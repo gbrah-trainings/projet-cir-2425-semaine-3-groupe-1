@@ -162,7 +162,6 @@ app.listen(port, () => {
 
 //------------------------------------<<<Create_Annonces>>>--------------------------------
 
-
 app.post('/submitAnnonce', (req, res) => {
   const { role, subjects, address, radius, startDate, availabilities } = req.body;
 

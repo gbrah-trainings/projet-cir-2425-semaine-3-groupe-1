@@ -129,25 +129,6 @@ document.getElementById('radius-enable').addEventListener('change', function () 
     radiusInput.disabled = !this.checked;
 });
 
-// Initialisation : désactive le champ par défaut
-document.getElementById('radius-input').disabled = true;
-
-// Ajoutez un écouteur d'événements pour gérer la sélection du checkbox
-document.getElementById('radius-enable').addEventListener('change', function () {
-    const radiusInput = document.getElementById('radius-input');
-    
-    // Active ou désactive le champ en fonction de l'état du checkbox
-    if (this.checked) {
-        radiusInput.disabled = false;
-    } else {
-        radiusInput.disabled = true;
-        radiusInput.value = ''; // Réinitialise la valeur du rayon si désélectionné
-    }
-});
-
-// Initialisation : désactive le champ par défaut
-document.getElementById('radius-input').disabled = true;
-
 
 //-----------Serveur POST-------------
 
