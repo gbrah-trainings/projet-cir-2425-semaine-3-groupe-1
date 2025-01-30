@@ -1,4 +1,4 @@
-import {client, getterUser, setterUser} from "./connectDB.mjs"
+import {addNewUserInDB, client, getterUser, setterUser} from "./connectDB.mjs"
 export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePost, updateCityAndArea, updatePost };
 
 //La ville et le rayon de dispo sont pris depuis le profil de l'utilisateur
@@ -88,7 +88,7 @@ async function getPostInDB(idPost){
 }
 
 async function getReducedInfos(idUser){
-    //Récupère l'id, la matière et le type des annonces de l'user idUser pour affichage dans profil
+    //Récupère l'id, la matière, la description et le type des annonces de l'user idUser pour affichage dans profil
 
     try {
         //Connexion à la DB
@@ -96,7 +96,7 @@ async function getReducedInfos(idUser){
         const collection = db.collection("posts");
 
         //On récupère les annonces de l'utilisateur
-        const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1}}).toArray();
+        const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1, Complement: 1}}).toArray();
 
         if(result){
             console.log("Annonces récupérées"); //Retourne array vide si aucune annonce
@@ -191,4 +191,8 @@ async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, comp
         console.error("Erreur lors de la mise à jour de l'annonce: ", err);
         throw err;
     }
+}
+
+async function filteredSearch(){
+    
 }
