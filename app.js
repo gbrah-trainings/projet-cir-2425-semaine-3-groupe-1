@@ -259,7 +259,7 @@ app.get('/getAllStudentPosts', async (req, res) => {
       console.error("Erreur lors de la récupération des annonces des étudiants :", error);
       res.status(500).json({ error: "Erreur interne du serveur" });
   }
-});
+});dev had recent pushes 3 minutes ago
 
 app.get('/getAllTeacherPosts', async (req, res) => {
     try {
