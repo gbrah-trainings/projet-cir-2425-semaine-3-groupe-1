@@ -1,3 +1,6 @@
+// On déconnecte l'utilisateur s'il arrive sur cette page.
+localStorage.clear();
+
 const subjects = ["Mathématiques", "Sciences", "Informatique", "Français", "Anglais", "Physique", "Chimie", "Biologie", "Histoire", "Géographie"];
 const subjectInput = document.getElementById("teaching-subject");
 const autocompleteList = document.getElementById("autocomplete-list");
@@ -28,32 +31,13 @@ document.addEventListener("click", function (e) {
     }
 });
 
-function addSubject(subject) {
-    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
-        postit.querySelector("span").textContent
-    );
-    
-    if (existingSubjects.includes(subject)) {
-        alert(`La matière "${subject}" est déjà ajoutée !`);
-        return;
-    }
+// Fonction pour mettre à jour le champ caché avant la soumission
+function updateHiddenInput() {
+  const selectedSubjects = Array.from(subjectsContainer.children).map(postit => 
+      postit.querySelector("span").textContent
+  );
 
-    const postit = document.createElement("div");
-    postit.classList.add("subject-postit");
-
-    const subjectName = document.createElement("span");
-    subjectName.textContent = subject;
-
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "×";
-    removeBtn.classList.add("remove-btn");
-    removeBtn.addEventListener("click", () => {
-        postit.remove(); 
-    });
-
-    postit.appendChild(subjectName);
-    postit.appendChild(removeBtn);
-    subjectsContainer.appendChild(postit);
+  document.getElementById("hidden-teaching-subject").value = JSON.stringify(selectedSubjects);
 }
 
 
@@ -65,11 +49,13 @@ const form = document.getElementById('inscriptionForm');
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); // Empêche le rechargement de la page
 
+      updateHiddenInput();
+
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
 
       try {
-        const response = await fetch('/submit', {
+        const response = await fetch('/inscriptionSubmit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -87,10 +73,134 @@ const form = document.getElementById('inscriptionForm');
           } else {
             resultDiv.className = "success";
             resultDiv.textContent = 'Inscription réussie !';
-                  
+            window.location.href = "./login.html";
           }
         }
       } catch (error) {
         resultDiv.textContent = 'Une erreur est survenue. Veuillez réessayer dans quelques instants.';
       }
     });
+function removePostit(postit) {
+    console.log("Ajout de la classe 'removing'");
+    postit.classList.add('removing'); // Ajoute la classe avec l'animation CSS
+    postit.addEventListener('animationend', () => {
+        console.log("Animation terminée. Suppression de l'élément.");
+        postit.remove(); // Supprime le post-it une fois l'animation terminée
+        updateHiddenInput();
+    });
+}
+
+// Fonction existante : ajout des sujets
+function addSubject(subject) {
+    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
+        postit.querySelector("span").textContent
+    );
+    
+    if (existingSubjects.includes(subject)) {
+        alert(`La matière "${subject}" est déjà ajoutée !`);
+        return;
+    }
+
+    const postit = document.createElement("div");
+    postit.classList.add("subject-postit");
+
+    const subjectName = document.createElement("span");
+    subjectName.textContent = subject;
+    
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.classList.add("remove-btn");
+    removeBtn.setAttribute("type", "button"); // Ajoute cette ligne !
+    removeBtn.addEventListener("click", () => {
+        removePostit(postit); // Inclut l'animation de suppression
+        updateHiddenInput();
+    });
+    
+    postit.appendChild(subjectName);
+    postit.appendChild(removeBtn);
+    subjectsContainer.appendChild(postit);
+    updateHiddenInput();
+}
+
+function removePostit(postit) {
+    console.log("Ajout de la classe 'removing'");
+    postit.classList.add('removing'); // Ajoute la classe avec l'animation CSS
+    postit.addEventListener('animationend', () => {
+        console.log("Animation terminée. Suppression de l'élément.");
+        postit.remove(); // Supprime le post-it une fois l'animation terminée
+    });
+}
+
+// Fonction existante : ajout des sujets
+function addSubject(subject) {
+    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
+        postit.querySelector("span").textContent
+    );
+    
+    if (existingSubjects.includes(subject)) {
+        alert(`La matière "${subject}" est déjà ajoutée !`);
+        return;
+    }
+
+    const postit = document.createElement("div");
+    postit.classList.add("subject-postit");
+
+    const subjectName = document.createElement("span");
+    subjectName.textContent = subject;
+    
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.classList.add("remove-btn");
+    removeBtn.setAttribute("type", "button"); // Ajoute cette ligne !
+    removeBtn.addEventListener("click", () => {
+        removePostit(postit); // Inclut l'animation de suppression
+    });
+    
+    postit.appendChild(subjectName);
+    postit.appendChild(removeBtn);
+    subjectsContainer.appendChild(postit);
+}
+
+function removePostit(postit) {
+    console.log("Ajout de la classe 'removing'");
+    postit.classList.add('removing'); // Ajoute la classe avec l'animation CSS
+    postit.addEventListener('animationend', () => {
+        console.log("Animation terminée. Suppression de l'élément.");
+        postit.remove(); // Supprime le post-it une fois l'animation terminée
+    });
+}
+
+// Fonction existante : ajout des sujets
+function addSubject(subject) {
+    const existingSubjects = Array.from(subjectsContainer.children).map(postit => 
+        postit.querySelector("span").textContent
+    );
+    
+    if (existingSubjects.includes(subject)) {
+        alert(`La matière "${subject}" est déjà ajoutée !`);
+        return;
+    }
+
+    const postit = document.createElement("div");
+    postit.classList.add("subject-postit");
+
+    const subjectName = document.createElement("span");
+    subjectName.textContent = subject;
+    
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.classList.add("remove-btn");
+    removeBtn.setAttribute("type", "button"); // Ajoute cette ligne !
+    removeBtn.addEventListener("click", () => {
+        removePostit(postit); // Inclut l'animation de suppression
+    });
+    
+    postit.appendChild(subjectName);
+    postit.appendChild(removeBtn);
+    subjectsContainer.appendChild(postit);
+}
+
+
+
+
+

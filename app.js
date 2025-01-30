@@ -1,7 +1,16 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
+import session from 'express-session';
+
+import { addNewUserInDB, login } from './backend/setupDB/connectDB.mjs';
+
+// Configurer `__dirname` pour ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const app = express();
 const port = 3000;
@@ -12,11 +21,20 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-
 app.use(bodyParser.json());
 
+
+// ----------- SESSION CONFIG -----------------------------------------------------------
+app.use(session({
+  secret: 'monSuperSecret', // À remplacer, évidemment
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 } // 1 jour
+}));
+
+
 // ----------- FORM D'INSCRIPTION -------------------------------------------------------
-app.post('/submit', (req, res) => {
+app.post('/inscriptionSubmit', (req, res) => {
 
   // Trop bien
   const username = req.body["username"]
@@ -25,16 +43,23 @@ app.post('/submit', (req, res) => {
   const email = req.body["email"];
   const numero = req.body["numero"];
   const gender = req.body["gender"];
-  const education_level = req.body["education_level"];
-  const teaching_subject = req.body["teaching_subject"];
+  const education_level = req.body["education-level"];
+  const hidden_teaching_subject = req.body["hidden-teaching-subject"];
+
   const password = req.body["password"];
   const confirm_password = req.body["confirm_password"];
 
-  if(password != confirm_password)  res.status(400).json({ error: 'Les mots de passe ne correspondent pas.' });
-  
+  let teaching_subject;
+  if (hidden_teaching_subject) {
+      teaching_subject = JSON.parse(hidden_teaching_subject);
+  } else {
+      teaching_subject = [];
+  }
+
+
   // Validation des champs requis
-  if (!username || !firstname || !ville || !email || !numero || !password || !confirm_password) {
-    return res.status(400).json({ error: 'Tous les champs doivent être remplis.' });
+  if (!username || !firstname || !ville || !email || !numero || !password || !confirm_password || !education_level) {
+    return res.status(400).json({ error: 'Tous les champs obligatoires (marqués par *) doivent être remplis.' });
   }
 
   // Validation de l'email
@@ -50,7 +75,6 @@ app.post('/submit', (req, res) => {
   }
 
   // Validation du mot de passe
-  
   if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
     return res.status(400).json({
       error: 'Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une lettre minuscule et un chiffre.',
@@ -63,12 +87,8 @@ app.post('/submit', (req, res) => {
   }
 
   try {
-    // Hachage du mot de passe
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Simulez l'insertion dans une base de données
-    // Exemple :
-    // await database.insertUser({ username, firstname, ville, email, numero, gender, education_level, teaching_subject, hashedPassword });
+    // Toutes les entrées sont sécurisées. En gros.
+    addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville, 0);
 
     res.status(201).json({ message: "Inscription réussie !" });
   } catch (error) {
@@ -79,9 +99,84 @@ app.post('/submit', (req, res) => {
 });
 
 
+
+// ----------- FORM DE CONNEXION --------------------------------------------------------
+app.post('/loginSubmit', async (req, res) => {
+  const email_phone = req.body["email_phone"];
+  const password = req.body["password"];
+
+  if (!email_phone || !password) {
+    return res.status(400).json({ error: 'Email et mot de passe requis.' });
+  }
+
+  try {
+    
+    const ret = await login(email_phone, password);
+    if(ret == -1){
+      res.status(500).json({ error: "Cet utilisateur n'existe pas dans la base de données." });
+    }else if (ret == 0){
+      res.status(500).json({ error: "Mot de passe incorrect." });
+    }else{
+        // Supposons que `ret` contient l'ID utilisateur
+        const user_id = ret; 
+
+        // Stocker les infos de l'utilisateur dans la session
+        req.session.user = {
+          id: user_id,
+          username: "USERNAME_TODO"
+        };
+
+        // Génération d'un token simple (id + timestamp)
+        const authToken = `${user_id}-${Date.now()}`;
+
+        // Stocker le token dans un cookie HTTP sécurisé
+        res.cookie('auth_token', authToken, {
+          httpOnly: true, // Sécurisé, inaccessible en JS côté client
+          secure: false,  // Mettre `true` en production avec HTTPS
+          maxAge: 24 * 60 * 60 * 1000 // Expiration dans 24h
+        });
+
+        // Réponse JSON avec les infos nécessaires
+        return res.status(200).json({
+          message: "Connexion réussie.",
+          user: {
+            id: user_id,
+            username: ("USERNAME_TODO_ID_"+user_id)
+          },
+          token: authToken
+        });
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de la connexion :', error);
+      res.status(500).json({ error: 'Une erreur est survenue, veuillez réessayer plus tard.' });
+    }
+
+});
+
+
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
+//------------------------------------<<<Create_Annonces>>>--------------------------------
 
+
+app.post('/submitAnnonce', (req, res) => {
+  const { role, subjects, address, radius, startDate, availabilities } = req.body;
+
+  if (!role || subjects.length === 0 || !startDate || availabilities.length === 0) {
+      return res.status(400).json({ error: 'Tous les champs obligatoires doivent être remplis.' });
+  }
+
+  try {
+      saveAnnonceInDB(role, subjects, address, radius, startDate, availabilities);
+
+      res.status(201).json({ message: "Annonce enregistrée avec succès !" });
+  } catch (error) {
+      console.error("Erreur lors de l'enregistrement de l'annonce :", error);
+      res.status(500).json({ error: "Une erreur est survenue, veuillez réessayer plus tard." });
+  }
+});
 

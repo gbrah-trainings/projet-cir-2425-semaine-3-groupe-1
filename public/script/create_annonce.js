@@ -1,3 +1,7 @@
+// Lire le cookie et voir si on est connecté
+const storedUserData = localStorage.getItem('user');
+if(!storedUserData) window.location.href = "login.html";
+
 function addAvailability() {
     const day = document.getElementById('availability-day').value;
     const start = document.getElementById('availability-start').value;
@@ -63,7 +67,7 @@ function filterSubjects() {
     const input = document.getElementById('subject-input');
     const filter = input.value.toLowerCase();
     const list = document.getElementById('subject-list');
-    list.innerHTML = ''; // Clear previous suggestions
+    list.innerHTML = ''; 
 
     // Ajouter les matières correspondant à la recherche
     subjects.forEach(subject => {
@@ -148,4 +152,65 @@ document.getElementById('radius-enable').addEventListener('change', function () 
 // Initialisation : désactive le champ par défaut
 document.getElementById('radius-input').disabled = true;
 
+
+//-----------Serveur POST-------------
+
+document.getElementById('btn_submit').addEventListener('click', function () {
+
+    // Récupérer le rôle (mentor ou apprenant)
+    const role = document.querySelector('input[name="role"]:checked')?.value;
+
+    // Récupérer les matières sélectionnées
+    const subjects = Array.from(document.querySelectorAll('.subject-item span'))
+        .map(subject => subject.textContent);
+
+    // Récupérer l'adresse du cours (peut être vide)
+    const address = document.getElementById('address').value.trim();
+
+    // Récupérer le rayon de déplacement (si coché)
+    let radius = null;
+    if (document.getElementById('radius-enable').checked) {
+        radius = document.getElementById('radius-input').value.trim();
+    }
+
+    // Récupérer la date de début
+    const startDate = document.getElementById('start-date').value;
+
+    // Récupérer les disponibilités
+    const availabilityItems = document.querySelectorAll('.availability-item span');
+    const availabilities = Array.from(availabilityItems).map(item => item.textContent);
+
+    // Vérification des champs obligatoires
+    if (!role || subjects.length === 0 || !startDate || availabilities.length === 0) {
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
+    }
+
+    // Création de l'objet à envoyer
+    const requestData = {
+        role,
+        subjects,
+        address,
+        radius: radius || null,
+        startDate,
+        availabilities
+    };
+
+    // Envoi des données via une requête POST
+    fetch('/submitAnnonce', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert("Une erreur est survenue, veuillez réessayer.");
+    });
+});
 

@@ -369,3 +369,273 @@
         font-size: 0.9rem;
     }
 }
+
+/* Wrapper global pour les sections de défilement */
+.annonces-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.annonces-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Les containers des annonces défilantes */
+.annonces-container {
+    display: flex;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px;
+    width: 100%;
+    max-width: 900px; /* Limiter la largeur pour les sections */
+}
+
+.annonce-card {
+    min-width: 200px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+/* Style des flèches */
+.annonces-arrow {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 24px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Positionner les flèches à gauche et à droite */
+.left-arrow {
+    position: absolute;
+    left: 10px;
+}
+
+.right-arrow {
+    position: absolute;
+    right: 10px;
+}
+
+/* Animation pour les boutons */
+.hero-button, 
+.contact-button, 
+.header-link {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Animation sur le survol des boutons */
+.hero-button:hover, 
+.contact-button:hover, 
+.header-link:hover {
+    transform: translateY(-5px); /* Légère élévation du bouton */
+    background-color: #2575fc; /* Change la couleur de fond au survol */
+    text-decoration: underline; /* Ajoute un soulignement pour les liens */
+}
+
+/* Optionnel: effet de survol spécifique pour les liens dans le header */
+.header-link:hover {
+    color: #ffbb33; /* Change la couleur du texte au survol */
+}
+
+/* Animation pour les boutons dans la section Features */
+.feature-card {
+    display: inline-block;
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Animation sur le survol des liens dans les cartes de fonctionnalités */
+.feature-card:hover {
+    transform: scale(1.05); /* Agrandissement léger au survol */
+    background-color: #2575fc; /* Change la couleur de fond */
+}
+
+.feature-card a {
+    display: block; /* Le lien occupe tout l'espace de la carte */
+    color: black; /* Couleur du texte */
+    text-decoration: none; /* Supprimer le soulignement des liens */
+    padding: 16px; /* Ajouter du padding pour l'espacement interne */
+    height: 100%; /* S'assurer que le lien occupe toute la hauteur de la carte */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+
+
+
+
+
+/* Ombre subtile pour les cartes et boutons */
+.feature-card, .dashboard-card, .annonce-card {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.hero-button, .contact-button {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Ombre forte pour les boutons au survol */
+.hero-button:hover, .contact-button:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Animation de fade-in pour les cartes */
+.feature-card, .dashboard-card, .annonce-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Zoom au survol des cartes */
+.feature-card:hover, .dashboard-card:hover, .annonce-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+
+
+
+
+/* Arrière-plan avec dégradé pour la section Hero */
+.hero {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+
+
+
+
+/* Effet parallaxe pour les images de fond */
+.hero {
+    background-image: url('../img/Prof2.png');
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+
+
+/* Typographie plus moderne pour les titres */
+.header-title, .hero-title, .features-title, .dashboard-title {
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Modifie la police du texte principal */
+.body-text {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Ajoute une touche artistique aux titres */
+.hero-title {
+    text-transform: uppercase;
+    font-size: 3rem;
+}
+
+
+
+
+
+
+
+/* Ajoute une animation sur l’apparition des sections au scroll */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section {
+    opacity: 0;
+    animation: slideIn 0.7s ease-out forwards;
+}
+
+.section:nth-child(even) {
+    animation-delay: 0.3s;
+}
+
+.section:nth-child(odd) {
+    animation-delay: 0.5s;
+}
+
+
+
+
+
+/* Exemple d'icônes animées dans les cartes */
+.feature-card a {
+    position: relative;
+    display: inline-block;
+}
+
+.feature-card a:before {
+    content: '→'; /* Icône de flèche */
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.feature-card a:hover:before {
+    transform: translateY(-50%) scale(1.2);
+}
+
+
+
+
+/* Décalage des sections */
+.features-container, .dashboard-container {
+    position: relative;
+    top: -50px;
+}
+
+
+
+
+
+.hero {
+    background: url('hero-video.mp4') no-repeat center center/cover;
+    background-attachment: fixed;
+}
+
+
+
+/* Style de base pour les flèches */
+.annonces-arrow {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 24px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Animation au survol */
+.annonces-arrow:hover {
+    background-color: #2575fc;
+    transform: translateX(5px) scale(1.1);
+}

@@ -195,3 +195,41 @@
         padding: 0.75rem;
     }
 }
+
+/* Animations pour les post-its */
+@keyframes postit-appear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Animation de suppression avec glissement vers le bas */
+@keyframes slideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0); /* L'élément commence à sa position normale */
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px); /* L'élément descend et devient transparent */
+    }
+}
+
+.subject-item.removing {
+    animation: slideOut 0.5s ease-out forwards; /* Animation de suppression */
+}
+
+.subject-postit {
+    animation: postit-appear 0.3s ease-out;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.subject-postit.removing {
+    animation: slideOut 0.3s ease-in forwards;
+}
+

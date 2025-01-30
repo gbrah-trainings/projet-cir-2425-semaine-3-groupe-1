@@ -59,38 +59,35 @@
     margin-bottom: 2rem;
 }
 
+.section-question {
+    margin-bottom: 2rem;
+	display: flex;
+    flex-wrap: wrap; /* Permet aux éléments de passer en dessous s'il n'y a pas assez de place */
+    gap: 10px; /* Espace entre les éléments */
+}
+
+.section-question > div {
+    flex: 1; /* Chaque élément prend une part égale de l'espace disponible */
+    min-width: 200px; /* Empêche les éléments de devenir trop petits */
+    padding: 10px;
+    text-align: center;
+}
+
+
+
 .section h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: black;
 }
 
-.radius-line {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-}
-
-.radius-line input[type="radio"] {
-    margin-right: 0.5rem;
-    accent-color: #6a11cb;
-}
-
-.radius-line label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-#radius-input {
-    width: 60px;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    text-align: center;
+#answer {
+	box-sizing: border-box;
+	position: absolute;
+	background: #FFFFFF;
+	border: 5px solid #000000;
+	border-radius: 20px;
+	font-family: Arial, sans-serif;
 }
 
 #radius-input:focus {
@@ -122,67 +119,6 @@
     resize: none;
 }
 
-.availability-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.availability-form select,
-.availability-form input {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-}
-
-.availability-form select:focus,
-.availability-form input:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 4px rgba(106, 17, 203, 0.5);
-}
-
-.availability-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.availability-item {
-    background-color: #2140ec;
-    animation: slideIn 0.5s ease-out;
-    color:white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.availability-item span {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.availability-item button {
-    background-color: #6a11cb;
-    color: white;
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
-}
-
-.availability-item button:hover {
-    background-color: #2575fc;
-}
-
 
 .btn {
     background-color: #6a11cb;
@@ -195,7 +131,7 @@
     font-size: 1rem;
     margin-top: 1rem;
     display: block;
-    margin-left: auto;
+    margin-left: left;
 }
 
 .btn:hover {
@@ -204,11 +140,20 @@
 
 .autocomplete {
     position: relative;
-    width: 100%;
+    width: 95%;
 }
 
 #subject-input {
     width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+#question {
+	width: 95%;
     padding: 0.75rem;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -311,7 +256,6 @@
     }
 }
 
-.availability-item.removing,
 .subject-item.removing {
     animation: removeItem 0.5s ease-in forwards;
 }
@@ -347,6 +291,5 @@
 .subject-item.removing {
     animation: slideOut 0.5s ease-out forwards; /* Animation de suppression */
 }
-
 
 
