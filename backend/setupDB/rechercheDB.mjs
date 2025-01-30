@@ -1,5 +1,5 @@
-import {client, getterUser} from "./connectDB.mjs"
-export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePost, updateCityAndArea, updatePost };
+import {addNewUserInDB, client, getterUser, setterUser} from "./connectDB.mjs"
+export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePost, updateCityAndArea, updatePost, filteredSearch };
 
 //La ville et le rayon de dispo sont pris depuis le profil de l'utilisateur
 //L'id de l'utilisteur est passé par le front avec la variable de session
@@ -181,5 +181,39 @@ async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, 
     } catch (err){
         console.error("Erreur lors de la mise à jour de l'annonce: ", err);
         throw err;
+    }
+}
+
+async function filteredSearch(subject, isTeacher){
+    //On cherche les annonces selon des filtres
+
+    /*
+    !!!!!!!!!!!!
+    IMPORTANT: SI ON N'UTILISE PAS UN FILTRE IL FAUT PASSER "undefined" (sans les guillemets) EN PARAMETRE
+    !!!!!!!!!!!!
+    */
+   
+    try{
+        //Connexion à la DB
+        const db = client.db("posts");
+        const collection = db.collection("posts");
+
+        //Recherche filtrée
+        const query = {};
+        if(subject) query.Subject = subject;
+        if(isTeacher !== undefined) query.IsTeacher = isTeacher;
+        const result = await collection.find(query).toArray();
+
+        if(result){
+            console.log("Recherche effectuée avec succès");
+            return result;
+        } else{
+            console.log("Problème lors de la recherche");
+            return -1;
+        }
+
+    } catch (err){
+        console.error("Erreur lors de la recherche filtrée: ", err);
+        throw err
     }
 }
