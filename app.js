@@ -231,22 +231,20 @@ app.get('/getUser/:userID', async (req, res) => {
 /* =================== API Setter info user =================== */
 app.put('/updateUser/:userID', async (req, res) => {
   try {
-      console.log("🛠️ Requête PUT reçue pour l'utilisateur :", req.params.userID);
-      console.log("🛠️ Données reçues :", req.body);
-
       const userID = parseInt(req.params.userID);
-      const updateData = req.body; // Contient les nouvelles valeurs
+      const { parametre, valeur } = req.body;
 
-      if (!userID || Object.keys(updateData).length === 0) {
-          return res.status(400).json({ error: "UserID et données requises pour la mise à jour" });
+      if (!userID || !parametre || valeur === undefined) {
+          return res.status(400).json({ error: "UserID, paramètre et valeur sont requis pour la mise à jour." });
       }
 
-      const result = await setterUser(userID, updateData);
-      if (!result.success) {
-          return res.status(404).json({ error: result.message });
+      const result = await setterUser(parametre, valeur, userID);
+
+      if (result === null) {
+          return res.status(404).json({ error: `Aucun utilisateur trouvé avec l'ID ${userID}.` });
       }
 
-      res.status(200).json({ message: result.message });
+      res.status(200).json({ message: `Mise à jour réussie : ${parametre} = ${valeur} pour l'utilisateur ${userID}` });
 
   } catch (error) {
       console.error("❌ Erreur lors de la mise à jour :", error);

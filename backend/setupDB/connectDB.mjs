@@ -150,38 +150,39 @@ async function getterUser(parametre, id) {
     }
 }
 
+
 async function setterUser(parametre, valeur, id) {
     try {
-        // Connexion à la base de données
         const db = client.db("users");
         const collection = db.collection("users");
 
         // Vérification que l'utilisateur existe
         const user = await collection.findOne({ UserID: id });
         if (!user) {
-            console.log("Aucun utilisateur trouvé avec l'ID : " +id);
-            return null;
+            console.log("Aucun utilisateur trouvé avec l'ID : " + id);
+            return { success: false, message: "Utilisateur introuvable." };
         }
 
         // Mise à jour du champ spécifié
         const result = await collection.updateOne(
-            { UserID: id }, // Recherche par ID
-            { $set: { [parametre]: valeur } } // Mise à jour dynamique du paramètre
+            { UserID: id },
+            { $set: { [parametre]: valeur } }
         );
 
-        // Vérification du résultat de la mise à jour
-        if (result.matchedCount > 0) {
-            if (result.modifiedCount > 0) {
-                console.log("Mise à jour réussie : " + parametre + " = " + valeur + " pour l'utilisateur "+ id);
-            } else {
-                console.log('Aucun changement effectué');
-            }
-        } else {
-            console.log('Utilisateur introuvable.');
+        // Vérification du résultat
+        if (result.matchedCount === 0) {
+            return { success: false, message: "Aucun utilisateur correspondant trouvé." };
         }
+        if (result.modifiedCount === 0) {
+            return { success: true, message: "Aucun changement effectué, la valeur était déjà identique." };
+        }
+
+        console.log(`Mise à jour réussie : ${parametre} = ${valeur} pour l'utilisateur ${id}`);
+        return { success: true, message: `Mise à jour réussie : ${parametre} = ${valeur}.` };
+
     } catch (err) {
         console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
-        throw err;
+        return { success: false, message: "Erreur serveur." };
     }
 }
 

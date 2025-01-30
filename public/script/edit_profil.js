@@ -5,21 +5,25 @@ async function getUserInfo(userID, parametre) {
 }   
 
 
-async function setUserInfo(userID, parametre, value) {
-    const response = await fetch(`/updateUser/${userID}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [parametre]: value })
-    });
+async function setUserInfo(userID, parametre, valeur) {
+    try {
+        const response = await fetch(`/updateUser/${userID}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ parametre, valeur })
+        });
 
-    if (!response.ok) {
-        console.error("❌ Erreur:", response.status, response.statusText);
-        return null;
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.error || "Erreur inconnue");
+        }
+
+        console.log("✅ Mise à jour réussie :", result.message);
+        return result; // Retourne la réponse en JSON
+    } catch (error) {
+        console.error("❌ Erreur lors de la mise à jour :", error);
+        return { error: error.message };
     }
-
-    const data = await response.json();
-    console.log("✅ Réponse du serveur:", data);
-    return data;
 }
 
 
@@ -273,8 +277,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         userProfile.email = document.getElementById("edit-email").value;
         userProfile.education = document.getElementById("edit-education").value;
 
-        
-        // TODO !!!
+        // TODO : gérer les erreurs
         setUserInfo(user_id, "name",  document.getElementById("edit-firstname").value);
         setUserInfo(user_id, "surname",  document.getElementById("edit-lastname").value);
         setUserInfo(user_id, "email",  document.getElementById("edit-email").value);
