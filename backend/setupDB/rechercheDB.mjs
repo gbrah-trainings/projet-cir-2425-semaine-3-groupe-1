@@ -3,7 +3,6 @@ export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePo
 
 //La ville et le rayon de dispo sont pris depuis le profil de l'utilisateur
 //L'id de l'utilisteur est passé par le front avec la variable de session
-//Pour l'instant c'est mit au dur le temps qu'on fasse le back
 async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
     //Envoie une annonce dans la DB
     try{
@@ -166,7 +165,7 @@ async function updateCityAndArea(idUser, city, area){
     }
 }
 
-async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
+async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
     //Met à jour une annonce
     try{
         //Connexion à la DB
@@ -178,6 +177,11 @@ async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, 
         const result = await collection.updateOne({PostID: idPost}, {$set : updatedFields});
         if (result.modifiedCount > 0) {
             console.log("L'annonce à été mise à jour");
+
+            //On remplit le champ "postedsearchs" de la ddb user
+            const annonces =  await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
+
             return 1
         } else {
             console.log("Aucune annonce trouvée ou aucune modification nécessaire");
