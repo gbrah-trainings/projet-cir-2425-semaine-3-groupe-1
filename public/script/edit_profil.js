@@ -22,14 +22,19 @@ async function setUserInfo(userID, parametre, value) {
     return data;
 }
 
-// DEBUG ONLY
-setUserInfo(1, "name", "Georges");
 
+async function deleteUserAccount(userID) {
+    const response = await fetch(`/deleteUser/${userID}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+    });
 
+    const data = await response.json();
+    return data;
+}
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    // TEMPORAIRE. A RECUPERER DEPUIS LA SESSION
     let user_id = 0;
 
     // On souhaite afficher le profil de l'utilisateur connecté
@@ -283,8 +288,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Confirmer la suppression du compte
     confirmDeleteButton.addEventListener("click", function () {
+
+        // TODO : supprimer le compte
+        deleteUserAccount(user_id);
+
         alert("Le compte a été supprimé.");
-        window.location.href = "/home"; // Simuler la suppression et redirection
+        window.location.href = "/login.html";
         deleteConfirmationModal.style.display = "none";
         enableScroll(); // Réactiver le défilement après suppression
     });

@@ -84,18 +84,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         education: (await getUserInfo(user_id, "niveauEtudes")).niveauEtudes,
         courses: (await getUserInfo(user_id, "competences")).competences,
         mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
-        mentors: [
-            { name: "Marie Curie", image: "./img/Prof1.jpg" },
-            { name: "Alan Turing", image: "./img/Prof1.jpg" },
-            { name: "Alice Martin", image: "./img/Prof1.jpg" },
-            { name: "Bob Dubois", image: "./img/Prof1.jpg" }
-        ],
-        mentores: [
-            { name: "Alice Martin", image: "./img/Prof1.jpg" },
-            { name: "Bob Dubois", image: "./img/Prof1.jpg" },
-            { name: "Marie Curie", image: "./img/Prof1.jpg" },
-            { name: "Alan Turing", image: "./img/Prof1.jpg" }
-        ],
+        mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
+        mentores: [5,4,6,1], // Les ID des élèves du détenteur du compte
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees
     };
@@ -104,10 +94,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     function updateProfile() {
 
         // A DECOMMENTER EN PROD
-        //document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+        document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
 
         // DEBUG ONLY
-        document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName} (${user_id})`;
+        // document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName} (${user_id})`;
 
         document.getElementById("profile-lastname").textContent = userProfile.lastName;
         document.getElementById("profile-firstname").textContent = userProfile.firstName;
@@ -124,21 +114,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         const countElement = document.getElementById(countElementId);
         list.innerHTML = ""; // Vider la liste existante
 
-        dataArray.forEach(item => {
+        dataArray.forEach(async item => { // Item qui est du coup un ID
             const div = document.createElement("div");
             div.classList.add("mentor-item");
 
             const img = document.createElement("img");
-            img.src = item.image;
+            img.src = "./img/profiles/" + item + ".png";
             img.alt = `Image de ${item.name}`;
             img.classList.add("mentor-image");
 
             const name = document.createElement("span");
             name.classList.add("mentor-name");
-            name.textContent = item.name;
+
+            console.log(item);
+            console.log(await getUserInfo(item, "name"));
+            name.textContent = (await getUserInfo(item, "name")).name;
 
             div.appendChild(img);
             div.appendChild(name);
+
+            div.addEventListener('click', () => window.location.href = `http://localhost:3000/profil.html?id=${item}` );
+
+            div.style.cursor = 'pointer';
 
             list.appendChild(div);
         });
