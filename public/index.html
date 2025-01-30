@@ -25,22 +25,39 @@
 
     <section class="annonces">
         <h2 id="annonces" class="annonces-title">Annonces Mentors/Etudiants</h2>
+        
+        <div class="filters">
+            <label for="filter-type">Type :</label>
+            <select id="filter-type">
+                <option value="all">Tous</option>
+                <option value="mentors">Mentors</option>
+                <option value="students">Étudiants</option>
+            </select>
+            
+            <label for="filter-subject">Domaine :</label>
+            <select id="filter-subject">
+                <option value="all">Tous</option>
+                <option value="math">Mathématiques</option>
+                <option value="science">Science</option>
+                <option value="informatique">Informatique</option>
+                <option value="langues">Langues</option>
+            </select>
+            
+            <button id="apply-filters">Appliquer</button>
+        </div>
     
         <div class="annonces-wrapper" id="mentors-section">
             <h3 class="annonces-subtitle">Mentors cherchant des étudiants</h3>
             <button class="annonces-arrow left-arrow">❮</button>
             <div class="annonces-container" id="mentors-container">
-
             </div>
             <button class="annonces-arrow right-arrow">❯</button>
         </div>
     
-
         <div class="annonces-wrapper" id="students-section">
             <h3 class="annonces-subtitle">Étudiants cherchant un mentor</h3>
             <button class="annonces-arrow left-arrow">❮</button>
             <div class="annonces-container" id="students-container">
-
             </div>
             <button class="annonces-arrow right-arrow">❯</button>
         </div>
