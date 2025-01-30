@@ -85,32 +85,30 @@ async function getPostInDB(idPost){
 }
 
 async function getReducedInfos(idUser){
-    //Récupère l'id, la matière, la description et le type des annonces de l'user idUser pour affichage dans profil
-    async function getReducedInfos(idUser){
-        //Récupère l'id, la matière et le type des annonces de l'user idUser pour affichage dans profil
+    //Récupère l'id, la matière et le type des annonces de l'user idUser pour affichage dans profil
 
-        try {
-            //Connexion à la DB
-            const db = client.db("posts");
-            const collection = db.collection("posts");
+    try {
+        //Connexion à la DB
+        const db = client.db("posts");
+        const collection = db.collection("posts");
 
-            //On récupère les annonces de l'utilisateur
-            const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1}}).toArray();
+        //On récupère les annonces de l'utilisateur
+        const result = await collection.find({UserID:idUser}, {projection: {Subject: 1, PostID: 1, IsTeacher: 1}}).toArray();
 
-            if(result){
-                console.log("Annonces récupérées"); //Retourne array vide si aucune annonce
-                return result;
-            }
-            else{
-                console.log("Problème lors de la récupération"); //Ne devrait jamais arriver
-                return [] //On return un array vide
-            }
-        
-        } catch (err){
-            console.log("Erreur lors de la récupération des annonces de l'utilisateur: ", err);
-            throw err; //Remonte l'erreur
+        if(result){
+            console.log("Annonces récupérées"); //Retourne array vide si aucune annonce
+            return result;
         }
+        else{
+            console.log("Problème lors de la récupération"); //Ne devrait jamais arriver
+            return [] //On return un array vide
+        }
+    
+    } catch (err){
+        console.log("Erreur lors de la récupération des annonces de l'utilisateur: ", err);
+        throw err; //Remonte l'erreur
     }
+}
 
 async function deletePost(idPost){
     //Supprime l'annonce qui a l'id idPost
