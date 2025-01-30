@@ -639,3 +639,112 @@
     background-color: #2575fc;
     transform: translateX(5px) scale(1.1);
 }
+
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.annonces {
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filters label {
+    font-weight: bold;
+}
+
+.filters select, .filters button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.filters button {
+    cursor: pointer;
+    background-color: #6a11cb;
+    color:white;
+}
+
+.filters button:hover{
+    background-color:#2575fc;
+}
+
+.annonces-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.annonces-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.annonce-card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    text-align: center;
+}
+
+.annonce-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.annonce-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.annonce-description {
+    font-size: 14px;
+    color: #777;
+}
+
+.annonces-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(81, 36, 148, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.left-arrow { left: 5px; }
+.right-arrow { right: 5px; }
+
+.annonces-arrow:hover {
+    background: rgba(51, 55, 180, 0.8); 
+}
+
+
+
