@@ -80,7 +80,7 @@ if(storedUserData){
     const newListItem = document.createElement('li');
     const newLink = document.createElement('a');
 
-    newLink.href = '#nouveaute';
+    newLink.href = 'profil.html';
     newLink.className = 'header-link';
     newLink.textContent = 'Espace personnel';
 

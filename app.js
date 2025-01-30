@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 // ----------- SESSION CONFIG -----------------------------------------------------------
 app.use(session({
-  secret: 'monSuperSecret', // À remplacer, évidemment
+  secret: '3e63a7dcfc55e1ec34775b8b0e36614facfbae06e059921921b8ac5994c16a33', // Arbitraire
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 } // 1 jour
