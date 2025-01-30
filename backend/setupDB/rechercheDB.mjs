@@ -1,4 +1,4 @@
-import {client, getterUser} from "./connectDB.mjs"
+import {client, getterUser, setterUser} from "./connectDB.mjs"
 export { addNewPostInDB, getAllPostsInDB, getPostInDB, getReducedInfos, deletePost, updateCityAndArea, updatePost };
 
 //La ville et le rayon de dispo sont pris depuis le profil de l'utilisateur
@@ -25,6 +25,10 @@ async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, compleme
         
         if(result){
             console.log("Annonce publiée avec succès");
+
+            //On remplit le champ "postedsearchs" de la ddb user
+            const annonces =  await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
             return 1
         } else{
             console.log("Erreur de publication");
@@ -110,7 +114,7 @@ async function getReducedInfos(idUser){
     }
 }
 
-async function deletePost(idPost){
+async function deletePost(idPost, idUser){
     //Supprime l'annonce qui a l'id idPost
     try{
         //Connexion à la DB
@@ -123,6 +127,9 @@ async function deletePost(idPost){
         //On vérifie si ça a marché
         if (result.deletedCount > 0) {
             console.log("L'annonce a été supprimée");
+
+            const annonces = await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
             return 1;
         } else {
             console.log("Aucune annonce trouvée");
