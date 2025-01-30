@@ -10,6 +10,45 @@ document.addEventListener("DOMContentLoaded", async function () {
     // TEMPORAIRE. A RECUPERER DEPUIS LA PAGE PRECEDENTE EN POST
     const user_id = 1;
 
+    // On vérifie que l'utilisateur existe.
+    const test = (await getUserInfo(user_id, "name")).name;
+    if (!test) window.location.href = "index.html";
+
+
+    // Récupérer les annonces postées
+    const annonces_postees = (await getUserInfo(user_id, "postedSearchs")).postedSearchs;
+    let annonces_teacher = [];
+    let annonces_eleve = [];
+
+    annonces_postees.forEach(element => {
+        if(element.IsTeacher){
+            // Trier les annonces postées en tant que professeur
+            annonces_teacher.push(element);
+        }else{
+            // Trier les annonces postées en tant qu'élève
+            annonces_eleve.push(element);
+        }
+    });
+
+
+    //annoncesProposees
+    let annoncesProposees = [];
+    annonces_teacher.forEach(annonce => {
+        annoncesProposees.push({title: annonce.Subject, description:"", image: "./img/profiles.png"})
+    });
+
+    //annoncesRecherchees
+    let annoncesRecherchees = [];
+    annonces_eleve.forEach(annonce => {
+        annoncesRecherchees.push({title: annonce.Subject, description:"", image: "./img/profiles.png"})
+    });
+
+
+    // Récupérer la liste des professeurs
+    // TODO
+
+    // Récuperer la liste des élèves
+    // TODO
 
     // Données fictives pour le profil
     const userProfile = {
@@ -18,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         email: (await getUserInfo(user_id, "email")).email,
         education: (await getUserInfo(user_id, "niveauEtudes")).niveauEtudes,
         courses: (await getUserInfo(user_id, "competences")).competences,
-        mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
+        mentorships: 5,
         mentors: [
             { name: "Marie Curie", image: "./img/Prof1.jpg" },
             { name: "Alan Turing", image: "./img/Prof1.jpg" },
@@ -31,16 +70,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             { name: "Marie Curie", image: "./img/Prof1.jpg" },
             { name: "Alan Turing", image: "./img/Prof1.jpg" }
         ],
-        annoncesProposees: [
-            { title: "Cours de Python - Niveau Débutant", description: "Apprenez les bases du langage Python.", image: "./img/Prof1.jpg" },
-            { title: "Introduction au Machine Learning", description: "Une introduction aux concepts de Machine Learning.", image: "./img/Prof1.jpg" },
-            { title: "Aide pour un projet JavaScript", description: "Besoin d'aide pour votre projet JavaScript ?", image: "./img/Prof1.jpg" }
-        ],
-        annoncesRecherchees: [
-            { title: "Besoin d'un mentor en Data Science", description: "Je cherche un mentor en Data Science.", image: "./img/Prof1.jpg" },
-            { title: "Cours avancé en React.js", description: "Cours avancé sur React.js.", image: "./img/Prof1.jpg" },
-            { title: "Aide pour un projet en Cybersécurité", description: "Aide pour un projet lié à la cybersécurité.", image: "./img/Prof1.jpg" }
-        ]
+        annoncesProposees: annoncesProposees,
+        annoncesRecherchees: annoncesRecherchees
     };
 
     // Fonction pour remplir les informations du profil dans la page
