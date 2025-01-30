@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor J'Adore !</title>
+    <link href="styles/global.css" rel="stylesheet">
+    <link href="styles/profil.css" rel="stylesheet">
+</head>
+<body class="body-text">
+    <header class="header"></header>
+
+   
+    <section class="profile-relations-wrapper signup-container" style="display: flex; gap: 30px; align-items: flex-start;">
+        <!-- Profil -->
+        <div class="profile-container" style="display: flex; align-items: center; gap: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <img id="profile-picture" src="./img/Prof1.jpg" alt="Photo de profil" class="profile-img" style="width: 150px; height: 150px; border-radius: 50%;">
+            <div class="profile-info">
+                <h2 id="profile-name" class="signup-title"></h2>
+                <p><strong>Nom:</strong> <input type="text" id="profile-lastname" placeholder="Nom"></p>
+                <p><strong>Prénom:</strong> <input type="text" id="profile-firstname" placeholder="Prénom"></p>
+                <p><strong>Email:</strong> <input type="email" id="profile-email" placeholder="Email"></p>
+                <p><strong>Âge:</strong> <input type="number" id="profile-age" placeholder="Âge"></p>
+                <p><strong>Niveau d'étude:</strong> <input type="text" id="profile-education" placeholder="Niveau d'étude"></p>
+                <p><strong>Cours suivis:</strong> <span id="courses-taken"></span></p>
+                <p><strong>Mentorats effectués:</strong> <span id="mentorships-done"></span></p>
+                <p><strong>Nombre de cours suivis:</strong> <span id="profile-courses-count"></span></p>
+                
+                <button id="edit-profile-button">Modifier</button>
+
+                <button id="delete-account-button">Supprimer le compte</button>
+            </div>
+            
+            <div id="delete-confirmation-modal" class="modal">
+                <div class="modal-content">
+                    <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+                    <button id="confirm-delete-button">Oui, supprimer</button>
+                    <button id="cancel-delete-button">Non, annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <h3>Modifier le profil</h3>
+                <label for="edit-firstname">Prénom</label>
+                <input type="text" id="edit-firstname" placeholder="Prénom">
+                
+                <label for="edit-lastname">Nom</label>
+                <input type="text" id="edit-lastname" placeholder="Nom">
+                
+                <label for="edit-email">Email</label>
+                <input type="email" id="edit-email" placeholder="Email">
+                
+                <label for="edit-education">Niveau d'étude</label>
+                <input type="text" id="edit-education" placeholder="Niveau d'étude">
+                
+                <button id="save-profile-button">Sauvegarder</button>
+                <button id="cancel-edit-button">Annuler</button>
+            </div>
+        </div>
+
+
+        <div class="relations-container">
+            <div class="relations">
+                <h3>Mentors (<span id="mentors-count">0</span>)</h3>
+                <div id="mentors-list" class="relations-list"></div>
+                
+                <h3>Etudiants (<span id="mentores-count">0</span>)</h3>
+                <div id="mentores-list" class="relations-list"></div>     
+            </div>
+        </div>
+        
+    </section>
+
+    <section class="annonces-signup-container">
+        <h2 class="signup-title">Annonces</h2>
+        <div class="annonces-wrapper">
+            <div class="annonces-container" id="annonces-proposees-container">
+                <h3>Annonces Proposées</h3>
+                <button class="annonces-arrow left-arrow">❮</button>
+                <div id="annonces-proposees" class="annonces-list"></div>
+                <button class="annonces-arrow right-arrow">❯</button>
+            </div>
+    
+            <div class="annonces-container" id="annonces-recherchees-container">
+                <h3>Annonces Recherchées</h3>
+                <button class="annonces-arrow left-arrow">❮</button>
+                <div id="annonces-recherchees" class="annonces-list"></div>
+                <button class="annonces-arrow right-arrow">❯</button>
+            </div>
+        </div>        
+    </section>
+    
+    
+    
+
+    <footer class="footer"></footer>
+    
+</body>
+<script src="script/profil.js"></script>
+<script src="script/global.js"></script>
+</html>

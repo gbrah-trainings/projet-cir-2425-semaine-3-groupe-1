@@ -1,12 +1,24 @@
-document.addEventListener("DOMContentLoaded", function () {
+async function getUserInfo(userID, parametre) {
+    const response = await fetch(`/getUser/${userID}?parametre=${parametre}`);
+    const data = await response.json();
+    return data;
+
+}   
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+    // TEMPORAIRE. A RECUPERER DEPUIS LA PAGE PRECEDENTE EN POST
+    const user_id = 1;
+
+
     // Données fictives pour le profil
     const userProfile = {
-        firstName: "Jean",
-        lastName: "Dupont",
-        email: "jean.dupont@example.com",
-        education: "Master en Informatique",
-        courses: ["Développement Web", "IA & Machine Learning"],
-        mentorships: 5,
+        firstName: (await getUserInfo(user_id, "name")).name,
+        lastName: (await getUserInfo(user_id, "surname")).surname,
+        email: (await getUserInfo(user_id, "email")).email,
+        education: (await getUserInfo(user_id, "niveauEtudes")).niveauEtudes,
+        courses: (await getUserInfo(user_id, "competences")).competences,
+        mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
         mentors: [
             { name: "Marie Curie", image: "./img/Prof1.jpg" },
             { name: "Alan Turing", image: "./img/Prof1.jpg" },
