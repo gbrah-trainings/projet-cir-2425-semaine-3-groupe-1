@@ -1,3 +1,6 @@
+// On déconnecte l'utilisateur s'il arrive sur cette page.
+localStorage.clear();
+
 /* --------- Form submit ------------------------------------------------------------------- */
 
 const form = document.getElementById('loginForm');

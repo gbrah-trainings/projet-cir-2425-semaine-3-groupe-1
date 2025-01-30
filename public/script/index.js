@@ -91,5 +91,37 @@ document.querySelectorAll('.right-arrow').forEach((arrow, index) => {
 });
 
 
+// Gestion du header : lire le cookie et voir si on est connecté
+const storedUserData = localStorage.getItem('user');
+if(storedUserData){
+
+    // Récupérer les données de l'utilisateur connecté
+    const userData = JSON.parse(storedUserData);
+
+    const headerNav = document.querySelector('.header-nav');
+    const newListItem = document.createElement('li');
+    const newLink = document.createElement('a');
+
+    newLink.href = 'profil.html';
+    newLink.className = 'header-link';
+    newLink.textContent = 'Espace personnel';
+
+    newListItem.appendChild(newLink);
+    headerNav.appendChild(newListItem);
+
+}else{
+
+    const headerNav = document.querySelector('.header-nav');
+    const newListItem = document.createElement('li');
+    const newLink = document.createElement('a');
+
+    newLink.href = 'inscription.html';
+    newLink.className = 'header-link';
+    newLink.textContent = 'Inscription';
+
+    newListItem.appendChild(newLink);
+    headerNav.appendChild(newListItem);
+}
 
 
+// Sinon est connecté, afficher le nom et la photo

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor J'Adore !</title>
+    <link href="styles/admin.css" rel="stylesheet">
+    <link href="styles/global.css" rel="stylesheet">
+
+</head>
+
+    <body>
+        <header class="header"></header>
+
+        <div class="container">                
+            <section class="admin-panel">
+                <div class="stats">
+                    <h2>Espace administrateur</h2>
+                    <p>1 243 visiteurs aujourd’hui</p>
+                    <p>1 100 utilisateurs inscrits</p>
+                    <p>5 495 cours suivis</p>
+                    <p>12 943 messages échangés</p>
+                    <p>127 rendez-vous à venir</p>
+                    <h3>Nommer un autre administrateur</h3>
+                    <input type="email" placeholder="Adresse-mail">
+                </div>
+                <div class="b">
+                    <div class="top-users">
+                        <div class="active-user">
+                            <h3>Utilisateur le plus actif cette semaine :</h3>
+                            <div class="mentor-card">
+                                <img src="Robin.jpg" alt="Didier">
+                                <div class="mentor-info">
+                                    <p><strong>Didier</strong></p>
+                                    <p><i>Lille</i></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-prof">
+                            <h3>Professeur avec le plus de cours :</h3>
+                            <div class="mentor-card">
+                                <img src="Robin.jpg" alt="Didier">
+                                <div class="mentor-info">
+                                    <p><strong>Didier</strong></p>
+                                    <p><i>Lille</i></p>
+                                </div>
+                            </div>
+                            </div>
+                            <p>2e : <strong>Pascal</strong>, La Madeleine</p>
+                            <p>3e : <strong>Christian</strong>, Youpi-sur-mer</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="c">
+                <section class="user-list">
+                    <h2>Liste des utilisateurs (par ordre d’arrivée)</h2>
+                    <div class="label1">
+                        <label><input type="checkbox"> Afficher les administrateurs</label>
+                        <label><input type="checkbox"> Afficher les utilisateurs classiques</label>
+                        <label><input type="radio" name="tri"> Trier par nombre de messages</label>
+                        <label><input type="radio" name="tri"> Trier par nombre d’annonces</label>
+                        <label><input type="radio" name="tri"> Trier par nombre de recherches</label>
+                    </div>
+                    <div class="user">
+                        <img src="avatar.jpg" alt="Didier">
+                        <p><strong>Didier</strong> - Lille - Inscrit le 19/02/2024</p>
+                        <p>31 cours donnés - 12 cours reçus - 120 messages</p>
+                        <button class="delete">❌</button>
+                    </div>
+                    <div class="user">
+                        <img src="avatar.jpg" alt="Georges">
+                        <p><strong>Georges (ADMIN)</strong> - Lille - Inscrit le 10/01/1970</p>
+                        <p>31 cours donnés - 12 cours reçus - 120 messages</p>
+                        <button class="delete">❌</button>
+                    </div>
+                    <div class="user special">
+                        <img src="avatar.jpg" alt="DarkDidier_SEX">
+                        <p><strong>DarkDidier_SEX</strong> - Lille - Inscrit le 29/01/2024</p>
+                        <p>0 cours donnés - 0 cours reçu - 99999 messages</p>
+                        <button class="delete">❌</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+
+            
+    <footer class="footer"></footer>
+    <script src="script/global.js"></script>
+
+    </body>
+
+
+    
+</html>

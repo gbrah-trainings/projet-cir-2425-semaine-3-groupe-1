@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor J'Adore !</title>
+    <link href="styles/global.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/ia.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<header class="header"></header>
+<body class="body-text">
+    <div class="container">
+        <h1 class="title">Posez vos questions à l'IA</h1>
+
+
+
+        <div class="section">
+            <h2>Sélectionnez une matière :</h2>
+            <div class="input-group autocomplete">
+                
+                <input 
+                    type="text" 
+                    id="subject-input" 
+                    placeholder="Recherchez une matière..." 
+                    oninput="filterSubjects()"
+                />
+                <div class="autocomplete-list" id="subject-list"></div>
+            </div>
+            <button class="btn" onclick="addSubject()">Ajouter matière</button>
+            <div class="subject-list" id="subject-list-container"></div>
+        </div>
+
+
+        <div class="section">
+            <h2>Votre question :</h2>
+            <div class="input-group">
+                <textarea id="question" rows="1" placeholder="Comment faire pour..."></textarea>
+                
+        </div>
+        </div>
+
+        <div class="section">
+            <h3>Quel type d'exercice souhaitez vous ?</h3>
+            <div class="role-options">
+                <div class="option">
+                    <input type="radio" id="recite" name="exercice" value="recite">
+                    <label for="recite">Pose-moi simplement des questions sur le cours associé</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="facile" name="exercice" value="facile">
+                    <label for="facile">Un exercice simple pour comprendre les bases</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="moyen" name="exercice" value="moyen">
+                    <label for="moyen">Un exercice typique que je pourrais avoir en examen</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="difficile" name="exercice" value="difficile">
+                    <label for="difficile">Je veux me mettre au défi</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="sansexercice" name="exercice" value="sansexercice">
+                    <label for="sansexercice">Je n'ai pas besoin d'exercice</label>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="section">
+        <button class="btn" onclick="generateAnswer()" disabled>Envoyer à l'IA</button>
+        </div>
+    
+
+    <div id="answer">
+    
+    </div>
+
+    <button class="btn" onclick="generatePDF()">Télécharger en PDF</button>
+
+    </div>
+    
+    <footer class="footer"></footer>
+
+    <script src="script/global.js"></script>
+    <script src="script/ia.js"></script>
+</body>
+</html>
