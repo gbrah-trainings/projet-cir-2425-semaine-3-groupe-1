@@ -138,4 +138,14 @@ async function getUserInfo(userID, parametre) {
     console.log(data);
 }   
 
-//selection de tout les comptes avec des mentorats 
+//selectionner tout les utilisateurs 
+
+async function getAllTeachers() {
+    const response = await fetch('/getAllTeachersPosts');
+    const data = await response.json();
+    console.log(data);
+    //on récupère la liste des annonces, qu'on va mettre en forme dans mentors data
+    mentorsData = data;
+    generateAnnonces(mentorsData, 'mentors-container');
+}
+getAllTeachers();
