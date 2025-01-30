@@ -35,6 +35,7 @@ async function deleteUserAccount(userID) {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
+    // On est bien obligés de mettre une valeur par défaut à user_id ;)
     let user_id = 0;
 
     // On souhaite afficher le profil de l'utilisateur connecté
@@ -44,13 +45,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         const userData = JSON.parse(storedUserData);
         user_id = userData.id
     } else {
+        // On ne peut pas éditer le profil d'un autre. Ah, non !
         window.location.href = "index.html"
     }
 
-    // On vérifie que l'utilisateur existe... Ouais bon, on ne sait jamais hein ^^'
+    // On vérifie quand même que l'utilisateur existe... Ouais bon, on ne sait jamais hein ^^'
     const test = (await getUserInfo(user_id, "name")).name;
     if (!test) window.location.href = "index.html";
-
+    // Oui bon, à priori ça ne sert à rien. On ne sait jamais.
 
     // Récupérer les annonces postées
     const annonces_postees = (await getUserInfo(user_id, "postedSearchs")).postedSearchs;
@@ -81,10 +83,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
 
-    // Récupérer la liste des professeurs
+    // Récupérer la liste des ID des professeurs
     // TODO
 
-    // Récuperer la liste des élèves
+    // Récuperer la liste des ID des élèves
     // TODO
 
     const userProfile = {
@@ -94,18 +96,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         education: (await getUserInfo(user_id, "niveauEtudes")).niveauEtudes,
         courses: (await getUserInfo(user_id, "competences")).competences,
         mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
-        mentors: [
-            { name: "Marie Curie", image: "./img/Prof1.jpg" },
-            { name: "Alan Turing", image: "./img/Prof1.jpg" },
-            { name: "Alice Martin", image: "./img/Prof1.jpg" },
-            { name: "Bob Dubois", image: "./img/Prof1.jpg" }
-        ],
-        mentores: [
-            { name: "Alice Martin", image: "./img/Prof1.jpg" },
-            { name: "Bob Dubois", image: "./img/Prof1.jpg" },
-            { name: "Marie Curie", image: "./img/Prof1.jpg" },
-            { name: "Alan Turing", image: "./img/Prof1.jpg" }
-        ],
+        
+        // TODO
+        mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
+        mentores: [5,12,9,10], // Les ID des élèves du détenteur du compte
+
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees
     };
@@ -131,21 +126,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         const countElement = document.getElementById(countElementId);
         list.innerHTML = ""; // Vider la liste existante
 
-        dataArray.forEach(item => {
+        dataArray.forEach(async item => { // Item qui est du coup un ID
             const div = document.createElement("div");
             div.classList.add("mentor-item");
 
+            const user_name = (await getUserInfo(item, "name")).name;
+
             const img = document.createElement("img");
-            img.src = item.image;
-            img.alt = `Image de ${item.name}`;
+            img.src = "./img/profiles/" + item + ".png";
+            img.alt = `Image de ${user_name}`;
             img.classList.add("mentor-image");
 
             const name = document.createElement("span");
             name.classList.add("mentor-name");
-            name.textContent = item.name;
+
+            name.textContent = user_name;
 
             div.appendChild(img);
             div.appendChild(name);
+
+            div.addEventListener('click', () => window.location.href = `http://localhost:3000/profil.html?id=${item}` );
+
+            div.style.cursor = 'pointer';
 
             list.appendChild(div);
         });
@@ -271,10 +273,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         userProfile.email = document.getElementById("edit-email").value;
         userProfile.education = document.getElementById("edit-education").value;
 
+        
+        // TODO !!!
+        setUserInfo(user_id, "name",  document.getElementById("edit-firstname").value);
+        setUserInfo(user_id, "surname",  document.getElementById("edit-lastname").value);
+        setUserInfo(user_id, "email",  document.getElementById("edit-email").value);
+        setUserInfo(user_id, "niveauEtudes",  document.getElementById("edit-education").value);
+
         updateProfile(); // Mettre à jour le profil sur la page
 
-        // TODO : modifier le profil dans le serveur
-        setUserInfo(user_id, "name", 1);
 
         modal.style.display = "none";
         enableScroll(); // Réactiver le défilement
