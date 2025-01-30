@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
+import cors from 'cors';
 
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
 
@@ -16,6 +17,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.static('public'));
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -229,6 +231,9 @@ app.get('/getUser/:userID', async (req, res) => {
 /* =================== API Setter info user =================== */
 app.put('/updateUser/:userID', async (req, res) => {
   try {
+      console.log("🛠️ Requête PUT reçue pour l'utilisateur :", req.params.userID);
+      console.log("🛠️ Données reçues :", req.body);
+
       const userID = parseInt(req.params.userID);
       const updateData = req.body; // Contient les nouvelles valeurs
 
@@ -269,4 +274,12 @@ app.get('/getAllTeacherPosts', async (req, res) => {
         console.error("Erreur lors de la récupération des annonces des enseignants :", error);
         res.status(500).json({ error: "Erreur interne du serveur" });
     }
+});
+
+
+/* =================== Ouvrir le profil selon l'ID =================== */
+
+app.get('/profile', (req, res) => {
+  const id = req.query.id; // Récupération de l'ID depuis l'URL
+  res.json({ id }); // Renvoie l'ID au client
 });

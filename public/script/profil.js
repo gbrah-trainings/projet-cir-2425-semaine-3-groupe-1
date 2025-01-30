@@ -1,3 +1,17 @@
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id'); // Récupère l'ID de l'URL
+
+fetch(`http://localhost:3000/profile?id=${id}`)
+    .then(response => response.json())
+    .then(data => console.log("Données du serveur:", data))
+    .catch(error => console.error("Erreur:", error));
+
+
+
+console.log("ID récupéré:", id);
+const user_id = id;
+    
+
 async function getUserInfo(userID, parametre) {
     const response = await fetch(`/getUser/${userID}?parametre=${parametre}`);
     const data = await response.json();
@@ -6,9 +20,6 @@ async function getUserInfo(userID, parametre) {
 }   
 
 document.addEventListener("DOMContentLoaded", async function () {
-
-    // TEMPORAIRE. A RECUPERER DEPUIS LA PAGE PRECEDENTE EN POST
-    const user_id = 1;
 
     // Si le profil consulté est le sien
     // On souhaite afficher le profil de l'utilisateur connecté
@@ -91,7 +102,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Fonction pour remplir les informations du profil dans la page
     function updateProfile() {
-        document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+
+        // A DECOMMENTER EN PROD
+        //document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+
+        // DEBUG ONLY
+        document.getElementById("profile-name").textContent = `${userProfile.firstName} ${userProfile.lastName} (${user_id})`;
+
         document.getElementById("profile-lastname").textContent = userProfile.lastName;
         document.getElementById("profile-firstname").textContent = userProfile.firstName;
         document.getElementById("profile-email").textContent = userProfile.email;

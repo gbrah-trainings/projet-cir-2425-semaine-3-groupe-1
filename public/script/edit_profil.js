@@ -4,14 +4,27 @@ async function getUserInfo(userID, parametre) {
     return data;
 }   
 
+
 async function setUserInfo(userID, parametre, value) {
-    const response = await fetch(`/updateUser/${userID}?parametre=${parametre}?value=${value}`);
+    const response = await fetch(`/updateUser/${userID}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [parametre]: value })
+    });
+
+    if (!response.ok) {
+        console.error("❌ Erreur:", response.status, response.statusText);
+        return null;
+    }
+
     const data = await response.json();
+    console.log("✅ Réponse du serveur:", data);
     return data;
-}   
+}
 
 // DEBUG ONLY
-setUserInfo(1,"name","Georges");
+setUserInfo(1, "name", "Georges");
+
 
 
 document.addEventListener("DOMContentLoaded", async function () {
