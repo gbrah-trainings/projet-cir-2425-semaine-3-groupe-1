@@ -406,3 +406,36 @@ async function getUserSurnames() {
       return {};
   }
 }
+
+//----------------------------------<<<API Gemini>>>-------------------------------------
+/*
+
+console.log("Serveur démarré sur le port 3000");
+const express = require('express');
+const app = express();
+const geminiRoutes = require('./backend/gemini'); // Chemin vers votre fichier de routes Gemini
+
+// ... autres middlewares (cors, etc.)
+
+app.use(express.json()); // Important: pour parser le corps des requêtes en JSON
+console.log("Middleware express.json() ajouté");
+console.log("Middleware express.json() chargé :", typeof express.json()); // Doit afficher 'function'
+
+require('dotenv').config();
+const geminiRoutes = require('./backend/gemini');
+app.use('/api/gemini', geminiRoutes);
+console.log("Routes Gemini montées :", geminiRoutes); // Doit afficher un objet
+
+geminiRoutes.post('/generate', async (req, res) => {
+    const { prompt } = req.body;
+
+    try {
+        const response = await GeminiAPI.generateText(prompt); // Votre fonction pour appeler l'API Gemini
+        res.json({ response }); // Envoie la réponse au format JSON
+    } catch (error) {
+        console.error("Erreur lors de l'appel à l'API Gemini :", error);
+        res.status(500).json({ message: 'Erreur lors de la génération de la réponse.' });
+    }
+});
+
+*/

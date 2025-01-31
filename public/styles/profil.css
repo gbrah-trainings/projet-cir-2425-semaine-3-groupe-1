@@ -68,7 +68,7 @@
 }
 
 .relations-container {
-    width: 25%; 
+    width: 75%; 
 }
 
 .signup-title {
@@ -322,7 +322,6 @@ body.no-scroll {
 
 
 .profile-container, .relations-container {
-    width: 45%;
     margin: 0 auto;  
 }
 
