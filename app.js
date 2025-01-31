@@ -4,6 +4,11 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
+import geminiRoutes from './backend/gemini.cjs'; 
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import  generateText  from './backend/geminiServices.js';
+import * as dotenv from 'dotenv'; 
+
 
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
 import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
@@ -411,18 +416,17 @@ async function getUserSurnames() {
 /*
 
 console.log("Serveur démarré sur le port 3000");
-const express = require('express');
-const app = express();
-const geminiRoutes = require('./backend/gemini'); // Chemin vers votre fichier de routes Gemini
 
 // ... autres middlewares (cors, etc.)
 
 app.use(express.json()); // Important: pour parser le corps des requêtes en JSON
+
+
+
 console.log("Middleware express.json() ajouté");
 console.log("Middleware express.json() chargé :", typeof express.json()); // Doit afficher 'function'
 
-require('dotenv').config();
-const geminiRoutes = require('./backend/gemini');
+
 app.use('/api/gemini', geminiRoutes);
 console.log("Routes Gemini montées :", geminiRoutes); // Doit afficher un objet
 
@@ -438,4 +442,12 @@ geminiRoutes.post('/generate', async (req, res) => {
     }
 });
 
-*/
+
+
+const llm = new ChatGoogleGenerativeAI({
+  model: "gemini-1.5-pro",
+  temperature: 0,
+  maxRetries: 2,
+  // other params...
+});
+
