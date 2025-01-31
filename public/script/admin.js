@@ -45,21 +45,32 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!check_admin.isAdmin) window.location.href = "index.html";
 
     // Récupérer le nombre d'inscrits
+    const response = await fetch(`/getAllUsers`);
+    const data = await response.json();
+    const nb_inscrits = data.length;
+
+    let nb_coursSuivis = 0;   // coursSuivis - Elèves cherchant professeurs
+    let nb_annonces = 0;      // annonces - Professeurs cherchant élèves
 
 
-    // coursSuivis
+    for (const element of data) {
 
+        let userInfo = await getUserInfo(element.UserID, "nbCourses");
+        nb_coursSuivis += userInfo.nbCourses;
     
-    // annonces
+        userInfo = await getUserInfo(element.UserID, "nbMentorats")
+        nb_annonces += userInfo.nbMentorats;
 
+    }
+    
 
     // messages : à faire plus tard
 
 
     const stats = {
-        inscrits: 1100,
-        coursSuivis: 5495,
-        annonces: 5495,
+        inscrits: nb_inscrits,
+        coursSuivis: nb_coursSuivis,
+        annonces: nb_annonces,
         messages: 12943
     };
 
