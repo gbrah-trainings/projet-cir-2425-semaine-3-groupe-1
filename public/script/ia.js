@@ -70,7 +70,82 @@ function addSubject() {
     input.value = '';
 }
 
- async function generatePDF() {
+
+
+
+
+
+async function generateAnswer() {
+    const subjectList = document.getElementById('subject-list-container');
+    const selectedSubjects = Array.from(subjectList.children).map(item =>
+        item.querySelector('span').textContent
+    );
+
+    const question = document.getElementById('question').value;
+    const exerciceType = document.querySelector('input[name="exercice"]:checked')?.value || 'sansexercice'; // Récupérer le type d'exercice sélectionné
+
+    // Construction du prompt (plus complet)
+    const prompt = `Matières : ${selectedSubjects.join(', ')} Question : ${question} Type d'exercice : ${exerciceType} `;
+	console.log("URL de la requête :", '/api/gemini/generate');
+	console.log("Corps de la requête :", JSON.stringify({ prompt }));
+    try {
+        const response = await fetch('/api/gemini/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt })
+			
+        });
+		
+		console.log("le fetch:", response);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erreur lors de la génération de la réponse.');
+        }
+
+        const data = await response.json();
+        const answerDiv = document.getElementById('answer');
+        answerDiv.innerHTML = data.response; // Utiliser innerHTML pour permettre le HTML dans la réponse
+
+    } catch (error) {
+        console.error("Erreur lors de l'appel à l'API Gemini :", error);
+        alert(error.message);
+    }
+}
+
+
+// Activer le bouton "Envoyer à l'IA" seulement si une question est posée et au moins une matière est sélectionnée
+const questionInput = document.getElementById('question');
+const sendButton = document.querySelector('.btn[onclick="generateAnswer()"]'); // Sélectionner le bouton par son attribut onclick
+
+questionInput.addEventListener('input', () => {
+    const hasQuestion = questionInput.value.trim() !== '';
+    const hasSubjects = document.getElementById('subject-list-container').children.length > 0;
+    sendButton.disabled = !(hasQuestion && hasSubjects);
+});
+
+// Écouter les changements dans la liste des matières
+const subjectListContainer = document.getElementById('subject-list-container');
+subjectListContainer.addEventListener('DOMNodeInserted', () => {
+    const hasQuestion = questionInput.value.trim() !== '';
+    const hasSubjects = subjectListContainer.children.length > 0;
+    sendButton.disabled = !(hasQuestion && hasSubjects);
+});
+
+subjectListContainer.addEventListener('DOMNodeRemoved', () => {
+    const hasQuestion = questionInput.value.trim() !== '';
+    const hasSubjects = subjectListContainer.children.length > 0;
+    sendButton.disabled = !(hasQuestion && hasSubjects);
+});
+
+
+
+
+
+
+async function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -82,69 +157,5 @@ function addSubject() {
             // Ajouter l'image au PDF
             doc.addImage(imgData, 'PNG', 10, 10, 180, 0);
             doc.save("réponse.pdf");
-        }
+}
 	
-
-
-//on récupère les infos renseignés	
-function getFormData() {
-    const subject = document.getElementById("subject-input").value;
-    const question = document.getElementById("question").value;
-    const exerciseType = document.querySelector('input[name="exercice"]:checked')?.value || "sansexercice";
-
-    return { subject, question, exerciseType };
-}
-
-function generatePrompt({ subject, question, exerciseType }) {
-    return `Sujet : ${subject}\nQuestion : ${question}\nExercice : ${exerciseType}\n\nPeux-tu répondre à cette question et proposer un exercice correspondant au niveau demandé ?`;
-}
-
-function validateForm() {
-    const subject = document.getElementById("subject-input").value.trim();
-    const question = document.getElementById("question").value.trim();
-    const exerciseType = document.querySelector('input[name="exercice"]:checked');
-
-    if (!subject || !question || !exerciseType) {
-        alert("Veuillez remplir tous les champs avant d'envoyer votre demande.");
-        return false;
-    }
-    return true;
-}
-
-
-
-async function generateAnswer() {
-    if (!validateForm()) return; // Stoppe l'exécution si le formulaire est incomplet
-
-    const formData = getFormData();
-    const prompt = generatePrompt(formData);
-
-    try {
-        document.getElementById("answer").innerHTML = "<p>Chargement...</p>";
-        const responseText = await getAIResponse(prompt);
-        document.getElementById("answer").innerHTML = `<p>${responseText}</p>`;
-    } catch (error) {
-        document.getElementById("answer").innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
-        console.error("Erreur API :", error);
-    }
-}
-
-document.querySelector(".btn").addEventListener("click", generateAnswer);
-
-function updateButtonState() {
-    const btn = document.querySelector(".btn");
-    btn.disabled = !validateForm();
-}
-
-document.getElementById("subject-input").addEventListener("input", updateButtonState);
-document.getElementById("question").addEventListener("input", updateButtonState);
-document.querySelectorAll('input[name="exercice"]').forEach(input => 
-    input.addEventListener("change", updateButtonState)
-);
-
-
-//----------------------------------<<<API Gemini>>>-------------------------------------
-
-require('dotenv').config();
-const geminiRoutes = require('./backend/gemini');
-app.use('/api/gemini', geminiRoutes);
