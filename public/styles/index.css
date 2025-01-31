@@ -747,4 +747,35 @@ body {
 }
 
 
+.dashboard-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
+.dashboard-card a{
+    transition: 0.3s;
+    color:black;
+    text-decoration: none;
+}
+
+.dashboard-card a:hover{
+    transition: 0.3s;
+    color:white;
+}
+
+
+.dashboard-card:hover {
+    color: white;
+    transition: 0.3s;
+    background-color: #2575fc;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
