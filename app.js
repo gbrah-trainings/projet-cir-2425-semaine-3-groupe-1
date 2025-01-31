@@ -327,3 +327,38 @@ app.get('/getAllConvbyUser/:userID', async (req, res) => {
 
   }
 });
+
+/* ------- A partir de l'email, voir si le compte existe -------------- */
+/*
+return  True  si le compte existe
+return  False sinon
+*/
+import { client } from './backend/setupDB/connectDB.mjs'; // Assure-toi que la connexion est bien récupérée
+
+app.get('/doesAccountExist/:email', async (req, res) => {
+  try {
+      const email = req.params.email.trim().toLowerCase(); // Nettoyage des espaces et normalisation
+      console.log("🔍 Email reçu pour vérification :", `"${email}"`);
+
+      const db = client.db("users"); // Connexion à la base
+      const collection = db.collection("users");
+
+      const user = await collection.findOne(
+          { email: { $regex: `^${email}$`, $options: "i" } },
+          { projection: { _id: 0, UserID: 1 } } // Ne retourne que l'ID utilisateur
+      );
+
+      if (user) {
+          console.log("🔍 Utilisateur trouvé, UserID :", user.UserID);
+          res.status(200).json({ exists: true, userID: user.UserID });
+      } else {
+          console.log("❌ Aucun utilisateur trouvé");
+          res.status(404).json({ exists: false, error: "Aucun utilisateur trouvé avec cet email." });
+      }
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la vérification du compte :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
