@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 const uri="mongodb+srv://userAdmin:motdepasse@mentoringdb.g9iol.mongodb.net/?retryWrites=true&w=majority&appName=MentoringDB"
 const client = new MongoClient(uri);
 import bcrypt from 'bcrypt';
-export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser, getAllTeacherPosts, getAllStudentPosts };
+export { client, addNewUserInDB, checkAllUsernamesInDB, deleteUserInDB, login, closeDB, clearDB, getterUser, setterUser, getAllMentoringUser };
 
 
 
@@ -150,113 +150,86 @@ async function getterUser(parametre, id) {
     }
 }
 
-
 async function setterUser(parametre, valeur, id) {
     try {
+        // Connexion à la base de données
         const db = client.db("users");
         const collection = db.collection("users");
 
         // Vérification que l'utilisateur existe
         const user = await collection.findOne({ UserID: id });
         if (!user) {
-            console.log("Aucun utilisateur trouvé avec l'ID : " + id);
-            return { success: false, message: "Utilisateur introuvable." };
+            console.log("Aucun utilisateur trouvé avec l'ID : " +id);
+            return null;
         }
 
         // Mise à jour du champ spécifié
         const result = await collection.updateOne(
-            { UserID: id },
-            { $set: { [parametre]: valeur } }
+            { UserID: id }, // Recherche par ID
+            { $set: { [parametre]: valeur } } // Mise à jour dynamique du paramètre
         );
 
-        // Vérification du résultat
-        if (result.matchedCount === 0) {
-            return { success: false, message: "Aucun utilisateur correspondant trouvé." };
+        // Vérification du résultat de la mise à jour
+        if (result.matchedCount > 0) {
+            if (result.modifiedCount > 0) {
+                console.log("Mise à jour réussie : " + parametre + " = " + valeur + " pour l'utilisateur "+ id);
+            } else {
+                console.log('Aucun changement effectué');
+            }
+        } else {
+            console.log('Utilisateur introuvable.');
         }
-        if (result.modifiedCount === 0) {
-            return { success: true, message: "Aucun changement effectué, la valeur était déjà identique." };
-        }
-
-        console.log(`Mise à jour réussie : ${parametre} = ${valeur} pour l'utilisateur ${id}`);
-        return { success: true, message: `Mise à jour réussie : ${parametre} = ${valeur}.` };
-
     } catch (err) {
         console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
-        return { success: false, message: "Erreur serveur." };
+        throw err;
+    }
+}
+
+async function getAllMentoringUser(userID, teacher) {
+  try {
+      const db = client.db("users");
+      const collection = db.collection("users");
+
+      // Trouver l'utilisateur
+      const user = await collection.findOne({ UserID: userID });
+
+      if (!user) {
+          console.log(`❌ Aucun utilisateur trouvé avec l'ID ${userID}`);
+          return null;
+      }
+
+
+      // Filtrer les posts
+      const filteredPosts = user.postedSearchs.filter(post => post.IsTeacher === teacher);
+
+      return filteredPosts;
+
+  } catch (err) {
+      console.error("❌ Erreur lors de la récupération des posts :", err);
+      throw err;
+  }
+}
+
+
+export async function getAllUsers() {
+    try {
+        const db = client.db("users");
+        const collection = db.collection("users");
+
+        // Ajouter `surname` dans la projection pour qu'il soit renvoyé
+        const users = await collection.find({}, { projection: { UserID: 1, surname: 1, _id: 0 } }).toArray();
+
+        console.log(`✅ ${users.length} utilisateurs récupérés avec surname.`);
+        return users;
+
+    } catch (err) {
+        console.error("❌ Erreur lors de la récupération des utilisateurs :", err);
+        throw err;
     }
 }
 
 
+
+
 /* =================================== TEST SUR LA DB ============================= */
 
-async function getAllTeacherPosts() {
-  try {
-      // Connexion à la base de données
-      const db = client.db("users");
-      const collection = db.collection("users");
-
-      // Récupérer uniquement les `postedSearchs` des utilisateurs ayant des annonces `IsTeacher: true`
-      const users = await collection.find(
-          { "postedSearchs.IsTeacher": true }, // Filtrer les utilisateurs qui ont au moins une annonce `IsTeacher: true`
-          { projection: { postedSearchs: 1, _id: 0, UserID: 1 } } // Ne récupérer que `postedSearchs` et `UserID`
-      ).toArray();
-
-      // Extraire toutes les annonces qui ont `IsTeacher: true`
-      let teachingPosts = [];
-      users.forEach(user => {
-          user.postedSearchs.forEach(post => {
-              if (post.IsTeacher === true) {
-                  teachingPosts.push({ ...post, UserID: user.UserID });
-              }
-          });
-      });
-
-      if (teachingPosts.length > 0) {
-          console.log("Annonces des enseignants récupérées avec succès.");
-          return teachingPosts;
-      } else {
-          console.log("Aucune annonce trouvée pour les enseignants.");
-          return [];
-      }
-
-  } catch (err) {
-      console.error("Erreur lors de la récupération des annonces des enseignants :", err);
-      throw err;
-  }
-}
-
-async function getAllStudentPosts() {
-  try {
-      // Connexion à la base de données
-      const db = client.db("users");
-      const collection = db.collection("users");
-
-      // Récupérer uniquement les `postedSearchs` des utilisateurs ayant des annonces `IsTeacher: false`
-      const users = await collection.find(
-          { "postedSearchs.IsTeacher": false }, // Filtrer les utilisateurs qui ont au moins une annonce `IsTeacher: false`
-          { projection: { postedSearchs: 1, _id: 0, UserID: 1 } } // Ne récupérer que `postedSearchs` et `UserID`
-      ).toArray();
-
-      // Extraire toutes les annonces qui ont `IsTeacher: false`
-      let studentPosts = [];
-      users.forEach(user => {
-          user.postedSearchs.forEach(post => {
-              if (post.IsTeacher === false) {
-                  studentPosts.push({ ...post, UserID: user.UserID });
-              }
-          });
-      });
-
-      if (studentPosts.length > 0) {
-          console.log("Annonces des étudiants récupérées avec succès.");
-          return studentPosts;
-      } else {
-          console.log("Aucune annonce trouvée pour les étudiants.");
-          return [];
-      }
-
-  } catch (err) {
-      console.error("Erreur lors de la récupération des annonces des étudiants :", err);
-      throw err;
-  }
-}

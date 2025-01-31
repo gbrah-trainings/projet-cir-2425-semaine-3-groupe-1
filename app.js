@@ -4,9 +4,12 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
-import cors from 'cors';
 
-import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
+import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
+import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
+import {WebSocketServer,WebSocket} from 'ws';
+import { addNewPostInDB } from './backend/setupDB/rechercheDB.mjs';
+
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +20,6 @@ const app = express();
 const port = 3000;
 
 app.use(express.static('public'));
-app.use(cors());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -156,11 +158,39 @@ app.post('/loginSubmit', async (req, res) => {
 
 });
 
-
-
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+const wss = new WebSocketServer({server});
+
+wss.on('connection',(ws)=>{
+  console.log("New client connected");
+
+  ws.on('message',(msg) => {
+    let message = JSON.parse(msg);
+    //console.log('Message recieved:', message);
+    //console.log(message['MessageValue']);
+
+    createConv(message['userID'],message['MessageValue'],message['userID'],message['Recipient'])
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(message));  // Send the message to all other clients
+      }
+    });
+  });
+
+  ws.on('close',()=>{
+    console.log("Client disconnected");
+  });
+});
+
+wss.onerror = (error) => {
+  //console.error("WebSocket error:",error);
+  console.log("webSocket Error");
+};
+
 
 //------------------------------------<<<Create_Annonces>>>--------------------------------
 
@@ -172,7 +202,7 @@ app.post('/submitAnnonce', (req, res) => {
   }
 
   try {
-      saveAnnonceInDB(role, subjects, address, radius, startDate, availabilities);
+      addNewPostInDB(parseInt(req.params.userID), role, subjects, address, "", startDate, availabilities, true, true, true);
 
       res.status(201).json({ message: "Annonce enregistrée avec succès !" });
   } catch (error) {
@@ -252,25 +282,52 @@ app.put('/updateUser/:userID', async (req, res) => {
   }
 });
 
-/* =================== API Getter all posts =================== */
 
-app.get('/getAllStudentPosts', async (req, res) => {
+/* =================== API Get User Post =================== */
+
+import { getAllMentoringUser } from './backend/setupDB/connectDB.mjs';
+
+app.get('/getMentoringPosts/:userID', async (req, res) => {
   try {
-      const posts = await db.getAllStudentPosts();
+      const userID = parseInt(req.params.userID);
+      const teacher = req.query.teacher === "true"; // Convertit "true" en booléen
+
+
+      if (isNaN(userID)) {
+          return res.status(400).json({ error: "L'ID utilisateur est invalide." });
+      }
+
+      const posts = await getAllMentoringUser(userID, teacher);
+
+      if (!posts) {
+          return res.status(404).json({ error: "Utilisateur non trouvé ou aucun post correspondant." });
+      }
+
+
       res.status(200).json(posts);
+
   } catch (error) {
-      console.error("Erreur lors de la récupération des annonces des étudiants :", error);
-      res.status(500).json({ error: "Erreur interne du serveur" });
+      console.error("❌ Erreur API :", error);
+      res.status(500).json({ error: "Erreur interne du serveur." });
   }
 });
 
-app.get('/getAllTeacherPosts', async (req, res) => {
+/* =================== API Get All Users =================== */
+import { getAllUsers } from './backend/setupDB/connectDB.mjs';
+
+app.get('/getAllUsers', async (req, res) => {
     try {
-        const posts = await db.getAllTeacherPosts();
-        res.status(200).json(posts);
+        const users = await getAllUsers();
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ error: "Aucun utilisateur trouvé." });
+        }
+
+        res.status(200).json(users);
+
     } catch (error) {
-        console.error("Erreur lors de la récupération des annonces des enseignants :", error);
-        res.status(500).json({ error: "Erreur interne du serveur" });
+        console.error("❌ Erreur API :", error);
+        res.status(500).json({ error: "Erreur interne du serveur." });
     }
 });
 
@@ -281,3 +338,104 @@ app.get('/profile', (req, res) => {
   const id = req.query.id; // Récupération de l'ID depuis l'URL
   res.json({ id }); // Renvoie l'ID au client
 });
+
+app.get('/getAllConvbyUser/:userID', async (req, res) => {
+  try{
+    const userID = parseInt(req.params.userID);
+
+    const Convs = getAllConvByID(userID)
+
+    res.status(200).json({ allCOnvs: Convs });
+  }
+  catch(error){
+
+  }
+});
+
+/* ------- A partir de l'email, voir si le compte existe -------------- */
+/*
+return  True  si le compte existe
+return  False sinon
+*/
+import { client } from './backend/setupDB/connectDB.mjs'; // Assure-toi que la connexion est bien récupérée
+
+app.get('/doesAccountExist/:email', async (req, res) => {
+  try {
+      const email = req.params.email.trim().toLowerCase(); // Nettoyage des espaces et normalisation
+
+      const db = client.db("users"); // Connexion à la base
+      const collection = db.collection("users");
+
+      const user = await collection.findOne(
+          { email: { $regex: `^${email}$`, $options: "i" } },
+          { projection: { _id: 0, UserID: 1 } } // Ne retourne que l'ID utilisateur
+      );
+
+      if (user) {
+          res.status(200).json({ exists: true, userID: user.UserID });
+      } else {
+          console.log("❌ Aucun utilisateur trouvé");
+          res.status(404).json({ exists: false, error: "Aucun utilisateur trouvé avec cet email." });
+      }
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la vérification du compte :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
+});
+
+async function getUserSurnames() {
+  try {
+      const response = await fetch('/getAllUsers', { method: 'GET' });
+
+      if (!response.ok) {
+          throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+
+      const users = await response.json();
+
+      // Convertir en un objet { userID: surname }
+      let surnameMap = {};
+      users.forEach(user => {
+          surnameMap[user.UserID] = user.surname;
+      });
+
+      return surnameMap;
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération des surnoms :", error);
+      return {};
+  }
+}
+
+//----------------------------------<<<API Gemini>>>-------------------------------------
+/*
+
+console.log("Serveur démarré sur le port 3000");
+const express = require('express');
+const app = express();
+const geminiRoutes = require('./backend/gemini'); // Chemin vers votre fichier de routes Gemini
+
+// ... autres middlewares (cors, etc.)
+
+app.use(express.json()); // Important: pour parser le corps des requêtes en JSON
+console.log("Middleware express.json() ajouté");
+console.log("Middleware express.json() chargé :", typeof express.json()); // Doit afficher 'function'
+
+require('dotenv').config();
+const geminiRoutes = require('./backend/gemini');
+app.use('/api/gemini', geminiRoutes);
+console.log("Routes Gemini montées :", geminiRoutes); // Doit afficher un objet
+
+geminiRoutes.post('/generate', async (req, res) => {
+    const { prompt } = req.body;
+
+    try {
+        const response = await GeminiAPI.generateText(prompt); // Votre fonction pour appeler l'API Gemini
+        res.json({ response }); // Envoie la réponse au format JSON
+    } catch (error) {
+        console.error("Erreur lors de l'appel à l'API Gemini :", error);
+        res.status(500).json({ message: 'Erreur lors de la génération de la réponse.' });
+    }
+});
+
+*/

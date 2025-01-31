@@ -58,17 +58,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     //annoncesProposees
     let annoncesProposees = [];
     annonces_teacher.forEach(annonce => {
-        annoncesProposees.push({title: annonce.Subject, description:"", image: "./img/profiles.png"})
+        annoncesProposees.push({title: annonce.Subject, description:"", image: "./img/annonces/"+ user_id + "_" + annonce.Subject +".png"})
     });
 
     //annoncesRecherchees
     let annoncesRecherchees = [];
     annonces_eleve.forEach(annonce => {
-        annoncesRecherchees.push({title: annonce.Subject, description:"", image: "./img/profiles.png"})
+        
+        // Il ne faut alors pas utiliser l'user_id mais le prof_id.
+        // TODO !!
+        let prof_id = user_id; // ;(
+
+        annoncesRecherchees.push({title: annonce.Subject, description:"", image: "./img/annonces/"+ prof_id + "_" + annonce.Subject +".png"})
     });
-
-    // Récuperer le nombres de cours donnés ("mentorships")
-
 
     // Récupérer la liste des professeurs
     // TODO
@@ -86,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
 
         mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
-        mentores: [5,4,10,1], // Les ID des élèves du détenteur du compte
+        mentores: [5,4,7,1], // Les ID des élèves du détenteur du compte
         
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees

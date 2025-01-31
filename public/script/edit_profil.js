@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         
         // TODO
         mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
-        mentores: [5,12,9,10], // Les ID des élèves du détenteur du compte
+        mentores: [5,6,7,8], // Les ID des élèves du détenteur du compte
 
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees

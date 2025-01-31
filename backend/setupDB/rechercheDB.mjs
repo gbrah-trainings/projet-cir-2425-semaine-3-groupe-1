@@ -25,6 +25,8 @@ async function addNewPostInDB(idUser, isTeacher, subject, meetingPoint, compleme
         
         if(result){
             console.log("Annonce publiée avec succès");
+            const annonces = await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
             return 1
         } else{
             console.log("Erreur de publication");
@@ -110,7 +112,7 @@ async function getReducedInfos(idUser){
     }
 }
 
-async function deletePost(idPost){
+async function deletePost(idPost, idUser){
     //Supprime l'annonce qui a l'id idPost
     try{
         //Connexion à la DB
@@ -123,6 +125,8 @@ async function deletePost(idPost){
         //On vérifie si ça a marché
         if (result.deletedCount > 0) {
             console.log("L'annonce a été supprimée");
+            const annonces = await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
             return 1;
         } else {
             console.log("Aucune annonce trouvée");
@@ -159,7 +163,7 @@ async function updateCityAndArea(idUser, city, area){
     }
 }
 
-async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
+async function updatePost(idPost, idUser, isTeacher, subject, meetingPoint, complement, startDate, timetable, onlineMeeting, irlMeeting, canMove){
     //Met à jour une annonce
     try{
         //Connexion à la DB
@@ -171,6 +175,8 @@ async function updatePost(idPost, isTeacher, subject, meetingPoint, complement, 
         const result = await collection.updateOne({PostID: idPost}, {$set : updatedFields});
         if (result.modifiedCount > 0) {
             console.log("L'annonce à été mise à jour");
+            const annonces = await getReducedInfos(idUser);
+            await setterUser("postedSearchs", annonces, idUser);
             return 1
         } else {
             console.log("Aucune annonce trouvée ou aucune modification nécessaire");

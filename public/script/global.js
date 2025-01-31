@@ -1,8 +1,6 @@
 function updateHeader() {
     const storedUserData = localStorage.getItem('user');
-    if(storedUserData){
-        const userData = JSON.parse(storedUserData);
-        console.log(userData);
+    if (storedUserData) {
         const navList = document.querySelector('.header-nav');
         if (navList) {
             let newListItem = document.createElement('li');
@@ -10,14 +8,6 @@ function updateHeader() {
             newLink.href = 'edit_profil.html';
             newLink.className = 'header-link';
             newLink.textContent = 'Espace personnel';
-            newListItem.appendChild(newLink);
-            navList.appendChild(newListItem);
-
-            newListItem = document.createElement('li');
-            newLink = document.createElement('a');
-            newLink.href = 'login.html';
-            newLink.className = 'header-link';
-            newLink.textContent = 'Déconnexion';
             newListItem.appendChild(newLink);
             navList.appendChild(newListItem);
         }
@@ -37,17 +27,55 @@ function updateHeader() {
     }
 }
 
-fetch('/assets/header.html')
-    .then(response => response.text())
-    .then(html => {
-        document.getElementsByTagName('header')[0].innerHTML = html;
-        updateHeader(); // Appel de la fonction après le chargement du header
-    });
+async function updateUserNav() {
+    const storedUserData = localStorage.getItem('user');
+    if (!storedUserData) return;
 
-fetch('/assets/footer.html')
-    .then(response => response.text())
-    .then(html => document.getElementsByTagName('footer')[0].innerHTML = html);
+    try {
+        const userData = JSON.parse(storedUserData);
+        if (!userData || !userData.id) return;
+        
+        const user_id = userData.id;
+        const navList = document.querySelector('.header-nav');
+        if (!navList) return;
+        
+        const check_admin = await getUserInfo(user_id, 'isAdmin');
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Le reste du code qui ne dépend pas du contenu chargé dynamiquement
+        if (check_admin.isAdmin) {
+            let adminItem = document.createElement('li');
+            let adminLink = document.createElement('a');
+            adminLink.href = 'admin.html';
+            adminLink.className = 'header-link';
+            adminLink.textContent = 'Espace Admin';
+            adminItem.appendChild(adminLink);
+            navList.appendChild(adminItem);
+        }
+
+        let logoutItem = document.createElement('li');
+        let logoutLink = document.createElement('a');
+        logoutLink.href = 'login.html';
+        logoutLink.className = 'header-link';
+        logoutLink.textContent = 'Déconnexion';
+        logoutItem.appendChild(logoutLink);
+        navList.appendChild(logoutItem);
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des infos utilisateur:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/assets/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementsByTagName('header')[0].innerHTML = html;
+            updateHeader();
+            updateUserNav(); // Exécuter après l'insertion du header
+        });
+
+    fetch('/assets/footer.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementsByTagName('footer')[0].innerHTML = html;
+        });
 });

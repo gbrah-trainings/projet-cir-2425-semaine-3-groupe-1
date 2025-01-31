@@ -6,48 +6,18 @@
     box-sizing: border-box;
 }
 
-
-.signup-btn {
-    background-color: #6a11cb;
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.signup-btn:hover {
-    background-color: #2575fc;
-}
-
-.signup-footer {
-    text-align: center;
-    font-size: 1rem;
-    margin-top: 1.5rem;
-}
-
-.signup-footer a {
-    color: #6a11cb;
-    text-decoration: none;
-}
-
-.signup-footer a:hover {
-    text-decoration: underline;
-}
-
 .signup {
     padding: 4rem 1rem;
     background-color: #f4f4f4;
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .signup-container {
     width: 100%;
     max-width: 500px;
-    margin: 0 auto;
     background-color: white;
     padding: 2rem;
     border-radius: 8px;
@@ -89,147 +59,69 @@
     border-color: #6a11cb;
 }
 
-.autocomplete-container {
-    position: relative;
-}
-
-.autocomplete-list {
-    border: 1px solid #ccc;
-    background-color: #fff;
-    position: absolute;
-    max-height: 150px;
-    overflow-y: auto;
-    z-index: 1000;
-    width: 43.5%;
-    border-radius: 4px;
-}
-
-.autocomplete-item {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.autocomplete-item:hover {
-    background-color: #f0f0f0;
-}
-
-.subjects-container {
-    margin-top: 1em;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.subject-postit {
-    background-color: #2e71db;
+.signup-btn {
+    background-color: #6a11cb;
     color: white;
-    padding: 10px 15px;
+    padding: 1rem;
     border-radius: 8px;
-    font-size: 0.9em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.subject-postit .remove-btn {
-    cursor: pointer;
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    font-size: 1rem;
+    font-weight: bold;
     border: none;
-    border-radius: 50%;
-    font-size: 1em;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.error{
-    color:red;
+.signup-btn:hover {
+    background-color: #2575fc;
+}
+
+.signup-footer {
     text-align: center;
+    font-size: 1rem;
+    margin-top: 1.5rem;
 }
 
-.success{
-    color:green;
-    text-align: center;
+.signup-footer a {
+    color: #6a11cb;
+    text-decoration: none;
 }
 
-/* Responsive Design */
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
     .signup-container {
         padding: 1.5rem;
     }
-
-    .autocomplete-list {
-        width: 100%;
-    }
-
-    .subjects-container {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-title {
-        font-size: 1.5rem;
-    }
-
-    .signup-title {
-        font-size: 1.5rem;
-    }
-
+    
     .form-input {
         font-size: 0.9rem;
         padding: 0.5rem;
     }
-
+    
     .signup-btn {
         font-size: 0.9rem;
         padding: 0.75rem;
     }
 }
 
-/* Animations pour les post-its */
-@keyframes postit-appear {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
+@media (max-width: 480px) {
+    .signup-title {
+        font-size: 1.5rem;
     }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 
-/* Animation de suppression avec glissement vers le bas */
-@keyframes slideOut {
-    0% {
-        opacity: 1;
-        transform: translateY(0); /* L'élément commence à sa position normale */
+    .form-input {
+        font-size: 0.85rem;
+        padding: 0.5rem;
     }
-    100% {
-        opacity: 0;
-        transform: translateY(20px); /* L'élément descend et devient transparent */
+    
+    .signup-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem;
+    }
+    
+    .form-label {
+        font-size: 0.9rem;
     }
 }
-
-.subject-item.removing {
-    animation: slideOut 0.5s ease-out forwards; /* Animation de suppression */
-}
-
-.subject-postit {
-    animation: postit-appear 0.3s ease-out;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.subject-postit.removing {
-    animation: slideOut 0.3s ease-in forwards;
-}
-

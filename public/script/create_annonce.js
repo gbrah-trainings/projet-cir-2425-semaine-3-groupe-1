@@ -6,10 +6,11 @@ function addAvailability() {
     const day = document.getElementById('availability-day').value;
     const start = document.getElementById('availability-start').value;
     const end = document.getElementById('availability-end').value;
-    const type = document.getElementById('availability-type').value;
+    const modes = Array.from(document.querySelectorAll('.availability-modes input:checked'))
+        .map(input => input.value);
 
     // Validation de base
-    if (!day || !start || !end || !type) {
+    if (!day || !start || !end || modes.length === 0) {
         alert("Veuillez remplir tous les champs pour ajouter une disponibilité.");
         return;
     }
@@ -21,22 +22,16 @@ function addAvailability() {
 
     // Formatage du texte du post-it
     const availabilityText = document.createElement('span');
-
-    // Si le type est "chez vous", ne pas ajouter "en" devant
-    const typeText = (type === "chez vous") ? type : `en ${type}`;
-
-    availabilityText.textContent = `Le ${day} de ${start} à ${end} ${typeText}`;
+    availabilityText.textContent = `Le ${day} de ${start} à ${end} (${modes.join(", ")})`;
 
     // Bouton de suppression
     const deleteButton = document.createElement('button');
     deleteButton.textContent = "Supprimer";
-    
-    // Ajout de l'animation de suppression avant de retirer l'élément
     deleteButton.onclick = () => {
-        availabilityItem.classList.add('removing');  // Ajouter la classe "removing" pour démarrer l'animation
+        availabilityItem.classList.add('removing');
         setTimeout(() => {
-            availabilityItem.remove();  // Supprimer l'élément après l'animation
-        }, 500);  // Délai de 500ms pour laisser l'animation se dérouler avant la suppression
+            availabilityItem.remove();
+        }, 500);
     };
 
     // Ajout des éléments au post-it
@@ -48,7 +43,7 @@ function addAvailability() {
     document.getElementById('availability-day').value = '';
     document.getElementById('availability-start').value = '';
     document.getElementById('availability-end').value = '';
-    document.getElementById('availability-type').value = '';
+    document.querySelectorAll('.availability-modes input').forEach(input => input.checked = false);
 }
 
 
@@ -126,72 +121,95 @@ function addSubject() {
 
 
 
-
-
-document.getElementById('radius-enable').addEventListener('change', function () {
-    const radiusInput = document.getElementById('radius-input');
-    radiusInput.disabled = !this.checked;
-});
-
-
 //-----------Serveur POST-------------
 
-document.getElementById('btn_submit').addEventListener('click', function () {
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('btn_submit').addEventListener('click', function () {
 
-    // Récupérer le rôle (mentor ou apprenant)
-    const role = document.querySelector('input[name="role"]:checked')?.value;
+        // Récupérer le rôle (mentor ou apprenant)
+        const role = document.querySelector('input[name="role"]:checked')?.value;
 
-    // Récupérer les matières sélectionnées
-    const subjects = Array.from(document.querySelectorAll('.subject-item span'))
-        .map(subject => subject.textContent);
+        // Récupérer les matières sélectionnées
+        const subjects = Array.from(document.querySelectorAll('.subject-item span'))
+            .map(subject => subject.textContent);
 
-    // Récupérer l'adresse du cours (peut être vide)
-    const address = document.getElementById('address').value.trim();
+        // Récupérer l'adresse du cours (peut être vide)
+        const address = document.getElementById('address').value.trim();
 
-    // Récupérer le rayon de déplacement (si coché)
-    let radius = null;
-    if (document.getElementById('radius-enable').checked) {
-        radius = document.getElementById('radius-input').value.trim();
-    }
+        // Récupérer la description du cours (peut être vide)
+        const description = document.getElementById('description').value.trim();
 
-    // Récupérer la date de début
-    const startDate = document.getElementById('start-date').value;
 
-    // Récupérer les disponibilités
-    const availabilityItems = document.querySelectorAll('.availability-item span');
-    const availabilities = Array.from(availabilityItems).map(item => item.textContent);
+        // Récupérer la date de début
+        const startDate = document.getElementById('start-date').value;
 
-    // Vérification des champs obligatoires
-    if (!role || subjects.length === 0 || !startDate || availabilities.length === 0) {
-        alert("Veuillez remplir tous les champs obligatoires.");
-        return;
-    }
+        // Récupérer les disponibilités
+        const availabilityItems = document.querySelectorAll('.availability-item span');
 
-    // Création de l'objet à envoyer
-    const requestData = {
-        role,
-        subjects,
-        address,
-        radius: radius || null,
-        startDate,
-        availabilities
-    };
+        // Séparation des disponibilités
+        const schedules = [];      
+        const onlineMeetings = []; 
+        const irlMeetings = [];    
 
-    // Envoi des données via une requête POST
-    fetch('/submitAnnonce', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert("Une erreur est survenue, veuillez réessayer.");
+        availabilityItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+
+            // Extraire les informations
+            const scheduleMatch = text.match(/le (.*?) de (.*?) à (.*?) (.*)/i);
+            if (scheduleMatch) {
+                const [, day, start, end, type] = scheduleMatch;
+                schedules.push({ day, start, end });
+
+                if (type.includes("en ligne") || type.includes("distanciel")) {
+                    onlineMeetings.push({ day, start, end });
+                }
+
+                if (type.includes("présentiel") || type.includes("chez vous")) {
+                    irlMeetings.push({ day, start, end });
+                }
+            }
+        });
+        
+
+        // Vérification des champs obligatoires
+        if (!role || subjects.length === 0 || !startDate || schedules.length === 0) {
+            alert("Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
+
+        // Création de l'objet à envoyer
+        const requestData = {
+            role,
+            subjects,
+            address,
+            description,  
+            startDate,
+            availabilities: schedules, 
+            onlineMeetings,
+            irlMeetings
+        };
+        
+
+        // Envoi des données via une requête POST
+        fetch('/submitAnnonce', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Erreur : " + data.error);
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert("Une erreur est survenue, veuillez réessayer.");
+        });
+        
     });
 });
-

@@ -26,7 +26,6 @@
             </div>
         </div>
 
-
         <div class="section">
             <h2>Sélectionnez une matière :</h2>
             <div class="input-group autocomplete">
@@ -42,11 +41,17 @@
             <div class="subject-list" id="subject-list-container"></div>
         </div>
 
-
         <div class="section">
             <h2>Adresse du cours (ou laissez vide pour visio) :</h2>
             <div class="input-group">
                 <textarea id="address" rows="2" placeholder="Adresse complète ou laissez vide"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Description du cours :</h2>
+            <div class="input-group">
+                <textarea id="description" rows="4" placeholder="Décrivez le cours, vos attentes, ou tout détail pertinent"></textarea>
             </div>
         </div>
 
@@ -72,17 +77,25 @@
                 </select>
                 <input type="time" id="availability-start" placeholder="Heure de début">
                 <input type="time" id="availability-end" placeholder="Heure de fin">
-                <select id="availability-type">
-                    <option value="" disabled selected>Mode</option>
-                    <option value="distanciel">Distanciel</option>
-                    <option value="présentiel (lieu à préciser)">Présentiel (lieu à préciser)</option>
-                    <option value="chez vous">Chez vous</option>
-                </select>
-                <button class="btn" onclick="addAvailability()">Ajouter</button>
             </div>
+            <div class="availability-modes">
+                <h3>Mode :</h3>
+                <div class="option">
+                    <input type="checkbox" id="mode-distanciel" value="distanciel">
+                    <label for="mode-distanciel">Distanciel</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" id="mode-presentiel" value="présentiel">
+                    <label for="mode-presentiel">Présentiel</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" id="mode-chezvous" value="chez vous">
+                    <label for="mode-chezvous">Chez vous</label>
+                </div>
+            </div>
+            <button class="btn" onclick="addAvailability()">Ajouter</button>
             <div class="availability-list" id="availability-list-container"></div>
         </div>
-
 
         <button class="btn" id="btn_submit">Soumettre</button>
     </div>
