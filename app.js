@@ -8,6 +8,7 @@ import session from 'express-session';
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
 import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
 import {WebSocketServer,WebSocket} from 'ws';
+import { addNewPostInDB } from './backend/setupDB/rechercheDB.mjs';
 
 
 // Configurer `__dirname` pour ES modules
@@ -201,7 +202,7 @@ app.post('/submitAnnonce', (req, res) => {
   }
 
   try {
-      saveAnnonceInDB(role, subjects, address, radius, startDate, availabilities);
+      addNewPostInDB(parseInt(req.params.userID), role, subjects, address, "", startDate, availabilities, true, true, true);
 
       res.status(201).json({ message: "Annonce enregistrée avec succès !" });
   } catch (error) {

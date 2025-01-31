@@ -283,7 +283,6 @@
     background-color: #ffffff;
 }
 
-/* Animation de l'élément qui apparaît avec un effet de glissement et fondu */
 @keyframes slideIn {
     0% {
         opacity: 0;
@@ -295,7 +294,6 @@
     }
 }
 
-/* Animation pour la suppression avec réduction et fondu */
 @keyframes removeItem {
     0% {
         opacity: 1;
@@ -316,7 +314,6 @@
     animation: removeItem 0.5s ease-in forwards;
 }
 
-/* Animation pour l'ajout avec élargissement et fondu */
 @keyframes addItem {
     0% {
         opacity: 0;
@@ -332,7 +329,6 @@
     animation: addItem 0.5s ease-out forwards;
 }
 
-/* Animation de suppression avec glissement vers le bas */
 @keyframes slideOut {
     0% {
         opacity: 1;
@@ -348,5 +344,58 @@
     animation: slideOut 0.5s ease-out forwards; /* Animation de suppression */
 }
 
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #6a11cb;
+    border-radius: 4px;
+    position: relative;
+    display: inline-block;
+}
+
+.checkbox-container:hover .checkbox-custom {
+    border-color: #2575fc;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: #6a11cb;
+    border-color: #6a11cb;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✔';
+    font-size: 16px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-custom {
+    animation: popIn 0.2s ease-in-out;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
 
