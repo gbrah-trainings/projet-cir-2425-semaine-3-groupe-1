@@ -1,330 +1,229 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import bodyParser from 'body-parser';
-import bcrypt from 'bcrypt';
-import session from 'express-session';
-import cors from 'cors';
+function generateAnnonces(data, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  data.forEach(item => {
+      const card = document.createElement('div');
+      card.classList.add('annonce-card');
+      
+      const img = document.createElement('img');
+      img.src = item.image;
+      img.alt = `Image annonce ${item.name}`;
+      img.classList.add('annonce-image');
 
-import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
+      const title = document.createElement('h3');
+      title.classList.add('annonce-title');
+      title.textContent = item.name;
 
-import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
+      const description = document.createElement('p');
+      description.classList.add('annonce-description');
+      description.textContent = item.subject;
 
-import {WebSocketServer,WebSocket} from 'ws';
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(description);
 
-// Configurer `__dirname` pour ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+      container.appendChild(card);
+  });
+}
 
 
-const app = express();
-const port = 3000;
+// Appeler la fonction pour remplir les sections avec les données
 
-app.use(express.static('public'));
-app.use(cors());
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Gérer le défilement des annonces
+document.querySelectorAll('.left-arrow').forEach((arrow, index) => {
+  arrow.addEventListener('click', () => {
+      const container = index === 0 ? document.getElementById('mentors-container') : document.getElementById('students-container');
+      container.scrollBy({
+          left: -200, // Défilement vers la gauche
+          behavior: 'smooth'
+      });
+  });
 });
 
-app.use(bodyParser.json());
+document.querySelectorAll('.right-arrow').forEach((arrow, index) => {
+  arrow.addEventListener('click', () => {
+      const container = index === 0 ? document.getElementById('mentors-container') : document.getElementById('students-container');
+      container.scrollBy({
+          left: 200, // Défilement vers la droite
+          behavior: 'smooth'
+      });
+  });
+});
 
 
-// ----------- SESSION CONFIG -----------------------------------------------------------
-app.use(session({
-  secret: '3e63a7dcfc55e1ec34775b8b0e36614facfbae06e059921921b8ac5994c16a33', // Arbitraire
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 } // 1 jour
-}));
+// Gestion du header : lire le cookie et voir si on est connecté
+const storedUserData = localStorage.getItem('user');
+if(storedUserData){
+
+  // Récupérer les données de l'utilisateur connecté
+  const userData = JSON.parse(storedUserData);
+
+  const headerNav = document.querySelector('.header-nav');
+  const newListItem = document.createElement('li');
+  const newLink = document.createElement('a');
+
+  newLink.href = 'profil.html';
+  newLink.className = 'header-link';
+  newLink.textContent = 'Espace personnel';
+
+  newListItem.appendChild(newLink);
+  headerNav.appendChild(newListItem);
+
+}else{
+
+  const headerNav = document.querySelector('.header-nav');
+  const newListItem = document.createElement('li');
+  const newLink = document.createElement('a');
+
+  newLink.href = 'inscription.html';
+  newLink.className = 'header-link';
+  newLink.textContent = 'Inscription';
+
+  newListItem.appendChild(newLink);
+  headerNav.appendChild(newListItem);
+}
 
 
-// ----------- FORM D'INSCRIPTION -------------------------------------------------------
-app.post('/inscriptionSubmit', (req, res) => {
+// Sinon est connecté, afficher le nom et la photo
 
-  // Trop bien
-  const username = req.body["username"]
-  const firstname = req.body["firstname"];
-  const ville = req.body["ville"];
-  const email = req.body["email"];
-  const numero = req.body["numero"];
-  const gender = req.body["gender"];
-  const education_level = req.body["education-level"];
-  const hidden_teaching_subject = req.body["hidden-teaching-subject"];
+//Creation des fonctions à base de l'api
+async function getUserInfo(userID, parametre) {
+  const response = await fetch(`/getUser/${userID}?parametre=${parametre}`);
+  const data = await response.json();
+  console.log(data);
+}   
 
-  const password = req.body["password"];
-  const confirm_password = req.body["confirm_password"];
+//selection de tout les comptes avec des mentorats 
+async function getMentoringPosts(userID, teacher) {
+  try {
 
-  let teaching_subject;
-  if (hidden_teaching_subject) {
-      teaching_subject = JSON.parse(hidden_teaching_subject);
+      const response = await fetch(`/getMentoringPosts/${userID}?teacher=${teacher}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+          throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+
+      const data = await response.json();
+
+      return Array.isArray(data) ? [...data] : []; // Clonage du tableau pour éviter toute modification par référence
+
+  } catch (error) {
+      console.error(`❌ Erreur lors de la récupération des posts pour userID=${userID}, teacher=${teacher} :`, error);
+      return [];
+  }
+}
+
+
+
+
+async function buildMentoringData(userIDs) {
+
+  let mentorsData = [];
+  let studentsData = [];
+
+  try {
+      for (let userID of userIDs) {
+
+          try {
+              const teacherPosts = await getMentoringPosts(userID, true);
+
+              if (teacherPosts.length > 0) {
+                  teacherPosts.forEach(post => {
+                      mentorsData.push({
+                          name: post.name || `User ${userID}`,
+                          subject: post.Subject,
+                          image: "./img/Prof1.jpg",
+                          category: post.Subject
+                      });
+                  });
+              }
+          } catch (error) {
+              console.error(`❌ Erreur dans getMentoringPosts(userID=${userID}, teacher=true) :`, error);
+          }
+
+          try {
+              const studentPosts = await getMentoringPosts(userID, false);
+
+              if (studentPosts.length > 0) {
+                  studentPosts.forEach(post => {
+                      studentsData.push({
+                          name: post.name || `User ${userID}`,
+                          subject: post.Subject,
+                          image: "./img/Prof1.jpg",
+                          category: post.Subject
+                      });
+                  });
+              }
+          } catch (error) {
+              console.error(`❌ Erreur dans getMentoringPosts(userID=${userID}, teacher=false) :`, error);
+          }
+
+      }
+  } catch (error) {
+      console.error("❌ Erreur bloquante dans buildMentoringData :", error);
+  }
+
+  return { mentorsData, studentsData };
+}
+
+
+async function getAllUserIDs() {
+  try {
+      const response = await fetch('/getAllUsers', { method: 'GET' });
+
+
+      if (!response.ok) {
+          throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+
+      const users = await response.json();
+
+      return users.map(user => user.UserID);
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération des utilisateurs :", error);
+      return [];
+  }
+}
+
+
+(async () => {
+  const userIDs = await getAllUserIDs();
+  const { mentorsData, studentsData } = await buildMentoringData(userIDs);
+
+  console.log("📌 Mentors :", mentorsData);
+  console.log("📌 Étudiants :", studentsData);
+  generateAnnonces(mentorsData, 'mentors-container');
+generateAnnonces(studentsData, 'students-container');
+})();
+
+document.getElementById('apply-filters').addEventListener('click', async () => {
+  const typeFilter = document.getElementById('filter-type').value;
+  const subjectFilter = document.getElementById('filter-subject').value;
+
+  const userIDs = await getAllUserIDs();
+  const { mentorsData, studentsData } = await buildMentoringData(userIDs);    
+
+  let filteredMentors = mentorsData;
+  let filteredStudents = studentsData;
+
+  if (subjectFilter !== 'all') {
+      filteredMentors = filteredMentors.filter(m => m.category === subjectFilter);
+      filteredStudents = filteredStudents.filter(s => s.category === subjectFilter);
+  }
+
+  if (typeFilter === 'mentors') {
+      generateAnnonces(filteredMentors, 'mentors-container');
+      document.getElementById('students-container').innerHTML = "";
+  } else if (typeFilter === 'students') {
+      generateAnnonces(filteredStudents, 'students-container');
+      document.getElementById('mentors-container').innerHTML = "";
   } else {
-      teaching_subject = [];
-  }
-
-
-  // Validation des champs requis
-  if (!username || !firstname || !ville || !email || !numero || !password || !confirm_password || !education_level) {
-    return res.status(400).json({ error: 'Tous les champs obligatoires (marqués par *) doivent être remplis.' });
-  }
-
-  // Validation de l'email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: "L'email est invalide." });
-  }
-
-  // Validation du numéro de téléphone (exemple pour 10 chiffres)
-  const numeroRegex = /^[0-9]{10}$/;
-  if (!numeroRegex.test(numero)) {
-    return res.status(400).json({ error: 'Le numéro de téléphone est invalide.' });
-  }
-
-  // Validation du mot de passe
-  if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
-    return res.status(400).json({
-      error: 'Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une lettre minuscule et un chiffre.',
-    });
-  }
-
-  // Vérification de la correspondance des mots de passe
-  if (password !== confirm_password) {
-    return res.status(400).json({ error: 'Les mots de passe ne correspondent pas.' });
-  }
-
-  try {
-    // Toutes les entrées sont sécurisées. En gros.
-    addNewUserInDB(firstname, username, email, password, false, gender, numero, education_level, teaching_subject, ville, 0);
-
-    res.status(201).json({ message: "Inscription réussie !" });
-  } catch (error) {
-    console.error('Erreur lors de l\'inscription :', error);
-    res.status(500).json({ error: 'Une erreur est survenue, veuillez réessayer plus tard.' });
-  }
-
-});
-
-
-
-// ----------- FORM DE CONNEXION --------------------------------------------------------
-app.post('/loginSubmit', async (req, res) => {
-  const email_phone = req.body["email_phone"];
-  const password = req.body["password"];
-
-  if (!email_phone || !password) {
-    return res.status(400).json({ error: 'Email et mot de passe requis.' });
-  }
-
-  try {
-    
-    const ret = await login(email_phone, password);
-    if(ret == -1){
-      res.status(500).json({ error: "Cet utilisateur n'existe pas dans la base de données." });
-    }else if (ret == 0){
-      res.status(500).json({ error: "Mot de passe incorrect." });
-    }else{
-        // Supposons que `ret` contient l'ID utilisateur
-        const user_id = ret; 
-
-        // Stocker les infos de l'utilisateur dans la session
-        req.session.user = {
-          id: user_id,
-          username: "USERNAME_TODO"
-        };
-
-        // Génération d'un token simple (id + timestamp)
-        const authToken = `${user_id}-${Date.now()}`;
-
-        // Stocker le token dans un cookie HTTP sécurisé
-        res.cookie('auth_token', authToken, {
-          httpOnly: true, // Sécurisé, inaccessible en JS côté client
-          secure: false,  // Mettre `true` en production avec HTTPS
-          maxAge: 24 * 60 * 60 * 1000 // Expiration dans 24h
-        });
-
-        // Réponse JSON avec les infos nécessaires
-        return res.status(200).json({
-          message: "Connexion réussie.",
-          user: {
-            id: user_id,
-            username: ("USERNAME_TODO_ID_"+user_id)
-          },
-          token: authToken
-        });
-      }
-
-    } catch (error) {
-      console.error('Erreur lors de la connexion :', error);
-      res.status(500).json({ error: 'Une erreur est survenue, veuillez réessayer plus tard.' });
-    }
-
-});
-
-
-
-let server = app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-
-const wss = new WebSocketServer({server});
-
-wss.on('connection',(ws)=>{
-  console.log("New client connected");
-
-  ws.on('message',(msg) => {
-    let message = JSON.parse(msg);
-    console.log('Message recieved:', message);
-    console.log(message['MessageValue']);
-
-    createConv(message['userID'],message['MessageValue'],message['userID'],message['Recipient'])
-
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(message));  // Send the message to all other clients
-      }
-    });
-  });
-
-  ws.on('close',()=>{
-    console.log("Client disconnected");
-  });
-});
-
-wss.onerror = (error) => {
-  //console.error("WebSocket error:",error);
-  console.log("webSocket Error");
-};
-
-
-//------------------------------------<<<Create_Annonces>>>--------------------------------
-
-app.post('/submitAnnonce', (req, res) => {
-  const { role, subjects, address, radius, startDate, availabilities } = req.body;
-
-  if (!role || subjects.length === 0 || !startDate || availabilities.length === 0) {
-      return res.status(400).json({ error: 'Tous les champs obligatoires doivent être remplis.' });
-  }
-
-  try {
-      saveAnnonceInDB(role, subjects, address, radius, startDate, availabilities);
-
-      res.status(201).json({ message: "Annonce enregistrée avec succès !" });
-  } catch (error) {
-      console.error("Erreur lors de l'enregistrement de l'annonce :", error);
-      res.status(500).json({ error: "Une erreur est survenue, veuillez réessayer plus tard." });
-  }
-});
-
-/* =================== API Delete Compte =================== */
-
-app.delete('/deleteUser/:userID', async (req, res) => {
-  try {
-      const userID = parseInt(req.params.userID);
-      if (!userID) {
-          return res.status(400).json({ error: "UserID requis pour la suppression" });
-      }
-
-      const result = await deleteUserInDB(userID);
-      if (!result.deleted) {
-          return res.status(404).json({ error: result.message });
-      }
-
-      res.status(200).json({ message: result.message });
-
-  } catch (error) {
-      console.error("❌ Erreur lors de la suppression :", error);
-      res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-});
-
-
-/* =================== API Getter info user =================== */
-app.get('/getUser/:userID', async (req, res) => {
-  try {
-      const userID = parseInt(req.params.userID);
-      const { parametre } = req.query; // Le paramètre demandé (ex: email, tel, etc.)
-
-      if (!userID || !parametre) {
-          return res.status(400).json({ error: "UserID et paramètre requis" });
-      }
-
-      const value = await getterUser(parametre, userID);
-      if (value === null) {
-          return res.status(404).json({ error: `Utilisateur introuvable ou paramètre "${parametre}" inexistant.` });
-      }
-
-      res.status(200).json({ [parametre]: value });
-
-  } catch (error) {
-      console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
-      res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-});
-
-/* =================== API Setter info user =================== */
-app.put('/updateUser/:userID', async (req, res) => {
-  try {
-      const userID = parseInt(req.params.userID);
-      const { parametre, valeur } = req.body;
-
-      if (!userID || !parametre || valeur === undefined) {
-          return res.status(400).json({ error: "UserID, paramètre et valeur sont requis pour la mise à jour." });
-      }
-
-      const result = await setterUser(parametre, valeur, userID);
-
-      if (result === null) {
-          return res.status(404).json({ error: `Aucun utilisateur trouvé avec l'ID ${userID}.` });
-      }
-
-      res.status(200).json({ message: `Mise à jour réussie : ${parametre} = ${valeur} pour l'utilisateur ${userID}` });
-
-  } catch (error) {
-      console.error("❌ Erreur lors de la mise à jour :", error);
-      res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-});
-
-/* =================== API Getter all posts =================== */
-
-app.get('/getAllStudentPosts', async (req, res) => {
-  try {
-      const posts = await db.getAllStudentPosts();
-      res.status(200).json(posts);
-  } catch (error) {
-      console.error("Erreur lors de la récupération des annonces des étudiants :", error);
-      res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-});
-
-app.get('/getAllTeacherPosts', async (req, res) => {
-    try {
-        const posts = await db.getAllTeacherPosts();
-        res.status(200).json(posts);
-    } catch (error) {
-        console.error("Erreur lors de la récupération des annonces des enseignants :", error);
-        res.status(500).json({ error: "Erreur interne du serveur" });
-    }
-});
-
-
-/* =================== Ouvrir le profil selon l'ID =================== */
-
-app.get('/profile', (req, res) => {
-  const id = req.query.id; // Récupération de l'ID depuis l'URL
-  res.json({ id }); // Renvoie l'ID au client
-});
-
-app.get('/getAllConvbyUser/:userID', async (req, res) => {
-  try{
-    const userID = parseInt(req.params.userID);
-
-    const Convs = getAllConvByID(userID)
-
-    res.status(200).json({ allCOnvs: Convs });
-  }
-  catch(error){
-
+      generateAnnonces(filteredMentors, 'mentors-container');
+      generateAnnonces(filteredStudents, 'students-container');
   }
 });
 
@@ -361,4 +260,5 @@ app.get('/doesAccountExist/:email', async (req, res) => {
       res.status(500).json({ error: "Erreur interne du serveur" });
   }
 });
+
 

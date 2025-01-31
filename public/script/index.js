@@ -1,19 +1,3 @@
-/*let mentorsData = [
-    { name: "Didier", subject: "Techno", image: "./img/Prof1.jpg", category: "science" },
-    { name: "Bertrand", subject: "Physique", image: "./img/Prof2.png", category: "science" },
-    { name: "Patrick", subject: "Maths", image: "./img/Prof1.jpg", category: "math" },
-    { name: "Bélatrice", subject: "Français", image: "./img/Prof1.jpg", category: "langues" },
-    { name: "Juliette", subject: "Anglais", image: "./img/Prof1.jpg", category: "langues" }
-];
-
-let studentsData = [
-    { name: "Sarah", subject: "Physique", image: "./img/Prof1.jpg", category: "science" },
-    { name: "Lucas", subject: "Maths", image: "./img/Prof2.png", category: "math" },
-    { name: "Nina", subject: "Informatique", image: "./img/Prof1.jpg", category: "informatique" },
-    { name: "Mickaël", subject: "Chimie", image: "./img/Prof2.png", category: "science" },
-    { name: "Claire", subject: "Biologie", image: "./img/Prof1.jpg", category: "science" }
-];
-*/
 function generateAnnonces(data, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -41,47 +25,10 @@ function generateAnnonces(data, containerId) {
         container.appendChild(card);
     });
 }
-let mentorsData = [];
-async function getAllTeachers() {
-    const response = await fetch('/getAllTeachersPosts');
-    const data = await response.json();
-    console.log(data);
-    //on récupère la liste des annonces, qu'on va mettre en forme dans mentors data
-    mentorsData = data;
-    generateAnnonces(mentorsData, 'mentors-container');
-}
-getAllTeachers();
-
-
-
-document.getElementById('apply-filters').addEventListener('click', () => {
-    const typeFilter = document.getElementById('filter-type').value;
-    const subjectFilter = document.getElementById('filter-subject').value;
-    
-    let filteredMentors = mentorsData;
-    let filteredStudents = studentsData;
-
-    if (subjectFilter !== 'all') {
-        filteredMentors = filteredMentors.filter(m => m.category === subjectFilter);
-        filteredStudents = filteredStudents.filter(s => s.category === subjectFilter);
-    }
-
-    if (typeFilter === 'mentors') {
-        generateAnnonces(filteredMentors, 'mentors-container');
-        document.getElementById('students-container').innerHTML = "";
-    } else if (typeFilter === 'students') {
-        generateAnnonces(filteredStudents, 'students-container');
-        document.getElementById('mentors-container').innerHTML = "";
-    } else {
-        generateAnnonces(filteredMentors, 'mentors-container');
-        generateAnnonces(filteredStudents, 'students-container');
-    }
-});
 
 
 // Appeler la fonction pour remplir les sections avec les données
-generateAnnonces(mentorsData, 'mentors-container');
-generateAnnonces(studentsData, 'students-container');
+
 
 // Gérer le défilement des annonces
 document.querySelectorAll('.left-arrow').forEach((arrow, index) => {
@@ -113,32 +60,26 @@ if(storedUserData){
     const userData = JSON.parse(storedUserData);
 
     const headerNav = document.querySelector('.header-nav');
-    
-    let newListItem = document.createElement('li');
-    let newLink = document.createElement('a');
+    const newListItem = document.createElement('li');
+    const newLink = document.createElement('a');
+
     newLink.href = 'profil.html';
     newLink.className = 'header-link';
     newLink.textContent = 'Espace personnel';
-    newListItem.appendChild(newLink);
-    headerNav.appendChild(newListItem);
 
-    newListItem = document.createElement('li');
-    newLink = document.createElement('a');
-    newLink.href = 'login.html';
-    newLink.className = 'header-link';
-    newLink.textContent = 'Déconnexion';
     newListItem.appendChild(newLink);
     headerNav.appendChild(newListItem);
 
 }else{
 
     const headerNav = document.querySelector('.header-nav');
-    
-    let newListItem = document.createElement('li');
-    let newLink = document.createElement('a');
+    const newListItem = document.createElement('li');
+    const newLink = document.createElement('a');
+
     newLink.href = 'inscription.html';
     newLink.className = 'header-link';
     newLink.textContent = 'Inscription';
+
     newListItem.appendChild(newLink);
     headerNav.appendChild(newListItem);
 }
@@ -153,6 +94,135 @@ async function getUserInfo(userID, parametre) {
     console.log(data);
 }   
 
-//selectionner tout les utilisateurs 
+//selection de tout les comptes avec des mentorats 
+async function getMentoringPosts(userID, teacher) {
+    try {
+
+        const response = await fetch(`/getMentoringPosts/${userID}?teacher=${teacher}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+        }
+
+        const data = await response.json();
+
+        return Array.isArray(data) ? [...data] : []; // Clonage du tableau pour éviter toute modification par référence
+
+    } catch (error) {
+        console.error(`❌ Erreur lors de la récupération des posts pour userID=${userID}, teacher=${teacher} :`, error);
+        return [];
+    }
+}
 
 
+
+
+async function buildMentoringData(userIDs) {
+
+    let mentorsData = [];
+    let studentsData = [];
+
+    try {
+        for (let userID of userIDs) {
+
+            try {
+                const teacherPosts = await getMentoringPosts(userID, true);
+
+                if (teacherPosts.length > 0) {
+                    teacherPosts.forEach(post => {
+                        mentorsData.push({
+                            name: post.name || `User ${userID}`,
+                            subject: post.Subject,
+                            image: "./img/Prof1.jpg",
+                            category: post.Subject
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error(`❌ Erreur dans getMentoringPosts(userID=${userID}, teacher=true) :`, error);
+            }
+
+            try {
+                const studentPosts = await getMentoringPosts(userID, false);
+
+                if (studentPosts.length > 0) {
+                    studentPosts.forEach(post => {
+                        studentsData.push({
+                            name: post.name || `User ${userID}`,
+                            subject: post.Subject,
+                            image: "./img/Prof1.jpg",
+                            category: post.Subject
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error(`❌ Erreur dans getMentoringPosts(userID=${userID}, teacher=false) :`, error);
+            }
+
+        }
+    } catch (error) {
+        console.error("❌ Erreur bloquante dans buildMentoringData :", error);
+    }
+
+    return { mentorsData, studentsData };
+}
+
+
+async function getAllUserIDs() {
+    try {
+        const response = await fetch('/getAllUsers', { method: 'GET' });
+
+
+        if (!response.ok) {
+            throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+        }
+
+        const users = await response.json();
+
+        return users.map(user => user.UserID);
+    } catch (error) {
+        console.error("❌ Erreur lors de la récupération des utilisateurs :", error);
+        return [];
+    }
+}
+
+
+(async () => {
+    const userIDs = await getAllUserIDs();
+    const { mentorsData, studentsData } = await buildMentoringData(userIDs);
+
+    console.log("📌 Mentors :", mentorsData);
+    console.log("📌 Étudiants :", studentsData);
+    generateAnnonces(mentorsData, 'mentors-container');
+generateAnnonces(studentsData, 'students-container');
+})();
+
+document.getElementById('apply-filters').addEventListener('click', async () => {
+    const typeFilter = document.getElementById('filter-type').value;
+    const subjectFilter = document.getElementById('filter-subject').value;
+
+    const userIDs = await getAllUserIDs();
+    const { mentorsData, studentsData } = await buildMentoringData(userIDs);    
+
+    let filteredMentors = mentorsData;
+    let filteredStudents = studentsData;
+
+    if (subjectFilter !== 'all') {
+        filteredMentors = filteredMentors.filter(m => m.category === subjectFilter);
+        filteredStudents = filteredStudents.filter(s => s.category === subjectFilter);
+    }
+
+    if (typeFilter === 'mentors') {
+        generateAnnonces(filteredMentors, 'mentors-container');
+        document.getElementById('students-container').innerHTML = "";
+    } else if (typeFilter === 'students') {
+        generateAnnonces(filteredStudents, 'students-container');
+        document.getElementById('mentors-container').innerHTML = "";
+    } else {
+        generateAnnonces(filteredMentors, 'mentors-container');
+        generateAnnonces(filteredStudents, 'students-container');
+    }
+});
