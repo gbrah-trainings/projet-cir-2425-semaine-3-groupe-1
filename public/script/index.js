@@ -52,6 +52,7 @@ document.querySelectorAll('.right-arrow').forEach((arrow, index) => {
 });
 
 
+
 // Gestion du header : lire le cookie et voir si on est connecté
 const storedUserData = localStorage.getItem('user');
 if(storedUserData){
@@ -116,7 +117,6 @@ async function getMentoringPosts(userID, teacher) {
         return [];
     }
 }
-
 
 
 
@@ -188,24 +188,44 @@ async function getAllUserIDs() {
         return [];
     }
 }
+let studentsData = [];
 
+async function updateSubjectFilter() {
+    const subjectFilter = document.getElementById('filter-subject');
+    subjectFilter.innerHTML = '<option value="all">Tous</option>'; 
+
+    const subjects = new Set([
+        ...mentorsData.map(m => m.category),
+        ...studentsData.map(s => s.category)
+    ]);
+
+    subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        subjectFilter.appendChild(option);
+    });
+}
 
 (async () => {
     const userIDs = await getAllUserIDs();
-    const { mentorsData, studentsData } = await buildMentoringData(userIDs);
+    const data = await buildMentoringData(userIDs);
 
-    console.log("📌 Mentors :", mentorsData);
-    console.log("📌 Étudiants :", studentsData);
+    mentorsData = data.mentorsData;
+    studentsData = data.studentsData;
+
+    console.log("Mentors :", mentorsData);
+    console.log("Étudiants :", studentsData);
+
     generateAnnonces(mentorsData, 'mentors-container');
-generateAnnonces(studentsData, 'students-container');
+    generateAnnonces(studentsData, 'students-container');
+
+    updateSubjectFilter(); 
 })();
 
-document.getElementById('apply-filters').addEventListener('click', async () => {
+document.getElementById('apply-filters').addEventListener('click', () => {
     const typeFilter = document.getElementById('filter-type').value;
     const subjectFilter = document.getElementById('filter-subject').value;
-
-    const userIDs = await getAllUserIDs();
-    const { mentorsData, studentsData } = await buildMentoringData(userIDs);    
 
     let filteredMentors = mentorsData;
     let filteredStudents = studentsData;
