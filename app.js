@@ -413,7 +413,7 @@ async function getUserSurnames() {
 }
 
 //----------------------------------<<<API Gemini>>>-------------------------------------
-/*
+
 
 console.log("Serveur démarré sur le port 3000");
 
