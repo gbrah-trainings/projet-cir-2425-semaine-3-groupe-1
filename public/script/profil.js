@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         mentorships: (await getUserInfo(user_id, "nbMentorats")).nbMentorats,
 
         mentors: [1,2,3,4], // Les ID des professeurs du détenteur du compte
-        mentores: [5,4,10,1], // Les ID des élèves du détenteur du compte
+        mentores: [5,4,7,1], // Les ID des élèves du détenteur du compte
         
         annoncesProposees: annoncesProposees,
         annoncesRecherchees: annoncesRecherchees

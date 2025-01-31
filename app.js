@@ -407,7 +407,7 @@ async function getUserSurnames() {
 }
 
 //----------------------------------<<<API Gemini>>>-------------------------------------
-
+/*
 
 console.log("Serveur démarré sur le port 3000");
 const express = require('express');
@@ -436,3 +436,5 @@ geminiRoutes.post('/generate', async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la génération de la réponse.' });
     }
 });
+
+*/
