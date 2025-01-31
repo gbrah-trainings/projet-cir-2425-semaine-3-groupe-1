@@ -46,6 +46,9 @@
     padding: 2rem;
     background-color: #f4f4f4;
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .messagerie-container {
@@ -55,7 +58,6 @@
     max-width: 800px;
     margin: 0 auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-right: 0.1rem;
 }
 
 .messagerie-title {
@@ -72,7 +74,6 @@
     height: 300px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
-    position: relative;
 }
 
 .message {
@@ -84,15 +85,12 @@
 .received {
     background-color: #e5e5e5;
     text-align: left;
-    width: fit-content;
 }
 
 .sent {
     background-color: #6a11cb;
     color: white;
     text-align: right;
-    width: fit-content;
-    
 }
 
 .message-text {
@@ -148,52 +146,21 @@ textarea {
     margin: 0;
 }
 
-/* Responsive Styles */
-
-/* Pour les grands écrans (ordinateurs de bureau) */
 @media (min-width: 1200px) {
-    .header-container {
-        width: 90%;
-        flex-direction: row;
-    }
-
     .messagerie-container {
         max-width: 800px;
     }
-
-    .messagerie-title {
-        font-size: 2rem;
-    }
-
-    .send-btn {
-        font-size: 1rem;
-    }
 }
 
-/* Pour les tablettes (entre 768px et 1199px) */
 @media (max-width: 1199px) and (min-width: 768px) {
-    .header-container {
-        width: 90%;
-    }
-
     .messagerie-container {
         max-width: 700px;
     }
-
-    .messagerie-title {
-        font-size: 1.8rem;
-    }
-
     .chat-box {
         height: 250px;
     }
-
-    .send-btn {
-        font-size: 0.9rem;
-    }
 }
 
-/* Pour les téléphones (moins de 768px) */
 @media (max-width: 767px) {
     .header-container {
         flex-direction: column;
@@ -216,7 +183,6 @@ textarea {
     .messagerie-container {
         width: 100%;
         padding: 1.5rem;
-        max-width: 100%;
     }
 
     .messagerie-title {
