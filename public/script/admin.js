@@ -44,6 +44,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     const check_admin = await getUserInfo(user_id, 'isAdmin');
     if (!check_admin.isAdmin) window.location.href = "index.html";
 
+    // Récupérer le nombre d'inscrits
+
+
+    // coursSuivis
+
+    
+    // annonces
+
+
+    // messages : à faire plus tard
+
+
     const stats = {
         inscrits: 1100,
         coursSuivis: 5495,

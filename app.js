@@ -6,6 +6,9 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB } from './backend/setupDB/connectDB.mjs';
+import {createConv,getConv,getAllConvByID} from './backend/setupDB/messagerie.js';
+import {WebSocketServer,WebSocket} from 'ws';
+
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -154,11 +157,39 @@ app.post('/loginSubmit', async (req, res) => {
 
 });
 
-
-
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+const wss = new WebSocketServer({server});
+
+wss.on('connection',(ws)=>{
+  console.log("New client connected");
+
+  ws.on('message',(msg) => {
+    let message = JSON.parse(msg);
+    console.log('Message recieved:', message);
+    console.log(message['MessageValue']);
+
+    createConv(message['userID'],message['MessageValue'],message['userID'],message['Recipient'])
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(message));  // Send the message to all other clients
+      }
+    });
+  });
+
+  ws.on('close',()=>{
+    console.log("Client disconnected");
+  });
+});
+
+wss.onerror = (error) => {
+  //console.error("WebSocket error:",error);
+  console.log("webSocket Error");
+};
+
 
 //------------------------------------<<<Create_Annonces>>>--------------------------------
 
@@ -297,5 +328,60 @@ app.get('/getAllUsers', async (req, res) => {
         console.error("❌ Erreur API :", error);
         res.status(500).json({ error: "Erreur interne du serveur." });
     }
+});
+
+
+/* =================== Ouvrir le profil selon l'ID =================== */
+
+app.get('/profile', (req, res) => {
+  const id = req.query.id; // Récupération de l'ID depuis l'URL
+  res.json({ id }); // Renvoie l'ID au client
+});
+
+app.get('/getAllConvbyUser/:userID', async (req, res) => {
+  try{
+    const userID = parseInt(req.params.userID);
+
+    const Convs = getAllConvByID(userID)
+
+    res.status(200).json({ allCOnvs: Convs });
+  }
+  catch(error){
+
+  }
+});
+
+/* ------- A partir de l'email, voir si le compte existe -------------- */
+/*
+return  True  si le compte existe
+return  False sinon
+*/
+import { client } from './backend/setupDB/connectDB.mjs'; // Assure-toi que la connexion est bien récupérée
+
+app.get('/doesAccountExist/:email', async (req, res) => {
+  try {
+      const email = req.params.email.trim().toLowerCase(); // Nettoyage des espaces et normalisation
+      console.log("🔍 Email reçu pour vérification :", `"${email}"`);
+
+      const db = client.db("users"); // Connexion à la base
+      const collection = db.collection("users");
+
+      const user = await collection.findOne(
+          { email: { $regex: `^${email}$`, $options: "i" } },
+          { projection: { _id: 0, UserID: 1 } } // Ne retourne que l'ID utilisateur
+      );
+
+      if (user) {
+          console.log("🔍 Utilisateur trouvé, UserID :", user.UserID);
+          res.status(200).json({ exists: true, userID: user.UserID });
+      } else {
+          console.log("❌ Aucun utilisateur trouvé");
+          res.status(404).json({ exists: false, error: "Aucun utilisateur trouvé avec cet email." });
+      }
+
+  } catch (error) {
+      console.error("❌ Erreur lors de la vérification du compte :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+  }
 });
 
