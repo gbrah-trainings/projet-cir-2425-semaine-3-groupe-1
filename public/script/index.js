@@ -118,15 +118,42 @@ async function getMentoringPosts(userID, teacher) {
     }
 }
 
+async function getUserSurnames() {
+    try {
+        const response = await fetch('/getAllUsers', { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+        }
+
+        const users = await response.json();
+
+        // Convertir en un objet { userID: surname }
+        let surnameMap = {};
+        users.forEach(user => {
+            surnameMap[user.UserID] = user.surname;
+        });
+
+        return surnameMap;
+    } catch (error) {
+        console.error("❌ Erreur lors de la récupération des surnoms :", error);
+        return {};
+    }
+}
 
 
 async function buildMentoringData(userIDs) {
-
     let mentorsData = [];
     let studentsData = [];
 
+    // Récupérer les surnoms des utilisateurs
+    const surnameMap = await getUserSurnames();
+    console.log("================================================================")
+    console.log("📌 Surnoms récupérés :", surnameMap);
+    console.log("================================================================")
     try {
         for (let userID of userIDs) {
+            const surname = surnameMap[userID] || `User ${userID}`; // Récupère le surname ou met "User X"
 
             try {
                 const teacherPosts = await getMentoringPosts(userID, true);
@@ -134,9 +161,10 @@ async function buildMentoringData(userIDs) {
                 if (teacherPosts.length > 0) {
                     teacherPosts.forEach(post => {
                         mentorsData.push({
-                            name: post.name || `User ${userID}`,
+                            name: surname, // Utilisation du surname récupéré
                             subject: post.Subject,
-                            image: "./img/Prof1.jpg",
+                            //chemin vers la photo de profil: ./img/userID.jpg
+                            image: "./img/profiles/"+userID+".png",
                             category: post.Subject
                         });
                     });
@@ -151,9 +179,9 @@ async function buildMentoringData(userIDs) {
                 if (studentPosts.length > 0) {
                     studentPosts.forEach(post => {
                         studentsData.push({
-                            name: post.name || `User ${userID}`,
+                            name: surname, // Utilisation du surname récupéré
                             subject: post.Subject,
-                            image: "./img/Prof1.jpg",
+                            image: "./img/profiles/"+userID+".png",
                             category: post.Subject
                         });
                     });
@@ -161,7 +189,6 @@ async function buildMentoringData(userIDs) {
             } catch (error) {
                 console.error(`❌ Erreur dans getMentoringPosts(userID=${userID}, teacher=false) :`, error);
             }
-
         }
     } catch (error) {
         console.error("❌ Erreur bloquante dans buildMentoringData :", error);
@@ -169,6 +196,7 @@ async function buildMentoringData(userIDs) {
 
     return { mentorsData, studentsData };
 }
+
 
 
 async function getAllUserIDs() {
@@ -194,6 +222,7 @@ async function updateSubjectFilter() {
     const subjectFilter = document.getElementById('filter-subject');
     subjectFilter.innerHTML = '<option value="all">Tous</option>'; 
 
+
     const subjects = new Set([
         ...mentorsData.map(m => m.category),
         ...studentsData.map(s => s.category)
@@ -208,20 +237,21 @@ async function updateSubjectFilter() {
 }
 
 (async () => {
-    const userIDs = await getAllUserIDs();
-    const data = await buildMentoringData(userIDs);
+    const userIDs = await getAllUserIDs(); // Récupère uniquement les IDs
+    const data = await buildMentoringData(userIDs); // Utilise getUserSurnames() pour ajouter les surnoms
 
     mentorsData = data.mentorsData;
     studentsData = data.studentsData;
 
-    console.log("Mentors :", mentorsData);
-    console.log("Étudiants :", studentsData);
+    console.log("📌 Mentors :", mentorsData);
+    console.log("📌 Étudiants :", studentsData);
 
     generateAnnonces(mentorsData, 'mentors-container');
     generateAnnonces(studentsData, 'students-container');
 
-    updateSubjectFilter(); 
+    updateSubjectFilter();
 })();
+
 
 document.getElementById('apply-filters').addEventListener('click', () => {
     const typeFilter = document.getElementById('filter-type').value;

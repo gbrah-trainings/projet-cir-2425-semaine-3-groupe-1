@@ -168,8 +168,8 @@ wss.on('connection',(ws)=>{
 
   ws.on('message',(msg) => {
     let message = JSON.parse(msg);
-    console.log('Message recieved:', message);
-    console.log(message['MessageValue']);
+    //console.log('Message recieved:', message);
+    //console.log(message['MessageValue']);
 
     createConv(message['userID'],message['MessageValue'],message['userID'],message['Recipient'])
 
@@ -361,7 +361,6 @@ import { client } from './backend/setupDB/connectDB.mjs'; // Assure-toi que la c
 app.get('/doesAccountExist/:email', async (req, res) => {
   try {
       const email = req.params.email.trim().toLowerCase(); // Nettoyage des espaces et normalisation
-      console.log("🔍 Email reçu pour vérification :", `"${email}"`);
 
       const db = client.db("users"); // Connexion à la base
       const collection = db.collection("users");
@@ -372,7 +371,6 @@ app.get('/doesAccountExist/:email', async (req, res) => {
       );
 
       if (user) {
-          console.log("🔍 Utilisateur trouvé, UserID :", user.UserID);
           res.status(200).json({ exists: true, userID: user.UserID });
       } else {
           console.log("❌ Aucun utilisateur trouvé");
@@ -385,3 +383,25 @@ app.get('/doesAccountExist/:email', async (req, res) => {
   }
 });
 
+async function getUserSurnames() {
+  try {
+      const response = await fetch('/getAllUsers', { method: 'GET' });
+
+      if (!response.ok) {
+          throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+
+      const users = await response.json();
+
+      // Convertir en un objet { userID: surname }
+      let surnameMap = {};
+      users.forEach(user => {
+          surnameMap[user.UserID] = user.surname;
+      });
+
+      return surnameMap;
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération des surnoms :", error);
+      return {};
+  }
+}

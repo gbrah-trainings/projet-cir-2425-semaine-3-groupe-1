@@ -212,20 +212,23 @@ async function getAllMentoringUser(userID, teacher) {
 
 
 export async function getAllUsers() {
-  try {
-      const db = client.db("users");
-      const collection = db.collection("users");
+    try {
+        const db = client.db("users");
+        const collection = db.collection("users");
 
-      // Récupérer tous les utilisateurs avec seulement les champs nécessaires
-      const users = await collection.find({}, { projection: { UserID: 1, name: 1, _id: 0 } }).toArray();
+        // Ajouter `surname` dans la projection pour qu'il soit renvoyé
+        const users = await collection.find({}, { projection: { UserID: 1, surname: 1, _id: 0 } }).toArray();
 
-      return users;
+        console.log(`✅ ${users.length} utilisateurs récupérés avec surname.`);
+        return users;
 
-  } catch (err) {
-      console.error("❌ Erreur lors de la récupération des utilisateurs :", err);
-      throw err;
-  }
+    } catch (err) {
+        console.error("❌ Erreur lors de la récupération des utilisateurs :", err);
+        throw err;
+    }
 }
+
+
 
 
 /* =================================== TEST SUR LA DB ============================= */
