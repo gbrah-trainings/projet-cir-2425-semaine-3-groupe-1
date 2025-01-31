@@ -4,14 +4,9 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
-<<<<<<< Updated upstream
 import cors from 'cors';
 
 import { addNewUserInDB, login, getterUser, setterUser, deleteUserInDB, getAllTeacherPosts, getAllStudentPosts } from './backend/setupDB/connectDB.mjs';
-=======
-require('dotenv').config();
-import { addNewUserInDB, login } from './backend/setupDB/connectDB.mjs';
->>>>>>> Stashed changes
 
 // Configurer `__dirname` pour ES modules
 const __filename = fileURLToPath(import.meta.url);

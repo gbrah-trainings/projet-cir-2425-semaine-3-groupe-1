@@ -96,7 +96,7 @@ function getFormData() {
 }
 
 function generatePrompt({ subject, question, exerciseType }) {
-    return `Sujet : ${subject}\nQuestion : ${question}\nExercice : ${exerciseType}\n\n Peux-tu répondre à cette question et proposer un exercice correspondant au niveau demandé ?`;
+    return `Sujet : ${subject}\nQuestion : ${question}\nExercice : ${exerciseType}\n\nPeux-tu répondre à cette question et proposer un exercice correspondant au niveau demandé ?`;
 }
 
 function validateForm() {
@@ -126,33 +126,6 @@ async function generateAnswer() {
     } catch (error) {
         document.getElementById("answer").innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
         console.error("Erreur API :", error);
-    }
-}
-
-
-async function getAIResponse(prompt) {
-    const API_ENDPOINT = '/api/gemini/generate'; // Endpoint de votre serveur proxy
-    try {
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ prompt })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json(); // Essayer de récupérer les détails de l'erreur
-            throw new Error(`Erreur de l'API: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
-        }
-
-        const data = await response.json();
-        // Assurez-vous que la structure de la réponse correspond à ce que Gemini renvoie
-        // Exemple : si Gemini renvoie { response: "texte de la réponse" }
-        return data.response; // Ajustez en fonction de la structure réelle
-    } catch (error) {
-        console.error("Erreur lors de la requête à l'API Gemini:", error);
-        throw error; // Rejeter l'erreur pour être gérée par l'appelant
     }
 }
 
